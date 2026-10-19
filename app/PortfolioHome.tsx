@@ -68,6 +68,14 @@ const getMobileBreakpointServerSnapshot = () => true;
 const sceneIds = ["home", "about", "work", "skills", "gallery"] as const;
 type HomePhase = "loading" | "opening";
 
+const galleryStars = Array.from({ length: 28 }, (_, index) => ({
+  left: `${(index * 37 + 11) % 97}%`,
+  top: `${(index * 53 + 7) % 93}%`,
+  size: `${index % 7 === 0 ? 4 : index % 3 === 0 ? 3 : 2}px`,
+  delay: `${-(index * 1.37) % 9}s`,
+  duration: `${4 + (index % 6) * 0.8}s`,
+}));
+
 const galleryArtworkMeta = [
   { width: 2197, height: 2551, alt: "A family discovering a spaceship in a park" },
   { width: 2197, height: 2551, alt: "A young explorer looking across the water toward a boat" },
@@ -345,7 +353,7 @@ export default function PortfolioHome() {
   const [resumeOpen, setResumeOpen] = useState(false);
   const [resumeView, setResumeView] = useState<"overview" | "document">("overview");
   const [navOpen, setNavOpen] = useState(false);
-  const [messageOpen, setMessageOpen] = useState(true);
+  const [messageOpen, setMessageOpen] = useState(false);
   const [messageTouched, setMessageTouched] = useState(false);
   const [workLayerTransitioning, setWorkLayerTransitioning] = useState(false);
   const [chatInput, setChatInput] = useState("");
@@ -478,6 +486,7 @@ export default function PortfolioHome() {
     if (!root) return;
     const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-scene]"));
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const cardRadius = `${Math.min(64, Math.max(36, window.innerWidth * 0.045))}px`;
 
     const context = gsap.context(() => {
       panels.slice(0, -1).forEach((panel) => {
@@ -494,7 +503,8 @@ export default function PortfolioHome() {
             },
           })
           .to(panel, {
-            scale: 0.94,
+            scale: 0.91,
+            borderRadius: cardRadius,
             autoAlpha: 0.52,
             duration: 0.86,
             ease: "none",
@@ -504,6 +514,25 @@ export default function PortfolioHome() {
             duration: 0.14,
             ease: "none",
           });
+      });
+
+      panels.slice(1).forEach((panel) => {
+        if (reducedMotion) return;
+        gsap.fromTo(
+          panel,
+          { scale: 0.965, borderRadius: cardRadius },
+          {
+            scale: 1,
+            borderRadius: "0px",
+            ease: "power2.in",
+            scrollTrigger: {
+              trigger: panel,
+              start: "top 25%",
+              end: "top top",
+              scrub: true,
+            },
+          },
+        );
       });
 
       panels.forEach((panel, index) => {
@@ -1294,6 +1323,7 @@ export default function PortfolioHome() {
           </div>
 
           <div ref={aboutBoardRef} className="about-canvas" aria-label="Draggable personal felt board">
+            <div className="about-board-content">
             <DraggableCard
               className="about-intro-card"
               label={text.introHeading}
@@ -1431,6 +1461,7 @@ export default function PortfolioHome() {
             >
               <img src="/assets/home/about/radish-badge.png" alt="Radish felt badge" loading="lazy" decoding="async" />
             </DraggableCard>
+            </div>
           </div>
 
           {messageVisible && (
@@ -1757,6 +1788,23 @@ export default function PortfolioHome() {
           className={`desktop-scene desktop-scene-gallery ${activeScene === 4 ? "is-active-scene" : ""}`}
           data-scene="gallery"
         >
+          <div className="gallery-background" aria-hidden="true">
+            <div className="gallery-background-stars">
+              {galleryStars.map((star, index) => (
+                <span
+                  key={index}
+                  style={{
+                    left: star.left,
+                    top: star.top,
+                    width: star.size,
+                    height: star.size,
+                    animationDelay: star.delay,
+                    animationDuration: star.duration,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
           <GalleryTunnel images={galleryImages} active={activeScene === 4} />
           <div className="desktop-gallery-shade" />
           <div className="desktop-section-heading is-light gallery-heading">

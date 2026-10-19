@@ -3261,15 +3261,16 @@ footer {
   gap: 48px;
   min-height: 0;
   padding: 48px;
-  background: url("/assets/home/skills/felt-board.png") center / 100% 100% no-repeat;
+  isolation: isolate;
   transform: translateX(-50%);
 }
 
 .desktop-skills-layout::before {
   position: absolute;
   inset: 0;
-  border-radius: 24px;
-  background: rgba(35, 52, 23, 0.2);
+  z-index: -1;
+  border: 64px solid transparent;
+  border-image: url("/assets/home/skills/felt-board.png") 64 fill / 64px / 0 round;
   content: "";
   pointer-events: none;
 }
@@ -3809,7 +3810,7 @@ footer {
   position: absolute;
   z-index: 4;
   right: 28px;
-  bottom: 22px;
+  bottom: 54px;
   left: 28px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -4289,10 +4290,12 @@ footer {
     flex-direction: column;
     gap: 16px;
     padding: 24px 16px 16px;
-    border-radius: 24px;
-    background-color: #506a33;
-    background-size: cover;
     transform: translateX(-50%);
+  }
+
+  .desktop-skills-layout::before {
+    border-width: 40px;
+    border-image-width: 40px;
   }
 
   .desktop-skill-kicker {
@@ -4423,7 +4426,7 @@ footer {
 
   .desktop-footer {
     right: 14px;
-    bottom: max(18px, env(safe-area-inset-bottom));
+    bottom: max(50px, calc(32px + env(safe-area-inset-bottom)));
     left: 14px;
     font-size: 0.6875rem;
   }
@@ -4440,12 +4443,12 @@ footer {
 .desktop-panels .desktop-scene {
   position: relative;
   inset: auto;
-  width: calc(100% - 24px);
-  height: 100svh;
+  width: 100%;
+  height: calc(100svh + 32px);
   min-height: 620px;
-  margin-inline: 12px;
+  margin-inline: 0;
   overflow: hidden;
-  border-radius: 28px;
+  border-radius: 0;
   scroll-margin-top: 0;
   pointer-events: none;
   transform-origin: center top;
@@ -4736,21 +4739,35 @@ footer {
   z-index: 5;
   top: calc(50% + clamp(26px, 4vh, 38px));
   left: 50%;
-  width: min(1083px, 80vw, 132vh);
+  width: min(1280px, 88vw, 140vh);
   aspect-ratio: 1083 / 610;
   padding: 0;
   overflow: hidden;
-  background: url("/assets/home/about/felt-board.png") center / 100% 100% no-repeat;
+  isolation: isolate;
   transform: translate(-50%, -50%);
+}
+
+.about-canvas::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border: 52px solid transparent;
+  border-image: url("/assets/home/about/felt-board.png") 52 fill / 52px / 0 round;
+  content: "";
+  pointer-events: none;
+}
+
+.about-board-content {
+  display: contents;
 }
 
 .about-card {
   position: absolute;
-  color: #1f2b1c;
-  border: 1px solid rgba(44, 59, 38, 0.36);
-  border-radius: 7px;
-  background: #fffdf5;
-  box-shadow: 0 5px 10px rgba(42, 53, 34, 0.18);
+  color: #172c23;
+  border: 2px solid #263d35;
+  border-radius: 11px;
+  background: #fffdf4;
+  box-shadow: 5px 6px 0 rgba(31, 48, 34, 0.28);
   transform: translate(var(--card-x), var(--card-y));
   touch-action: none;
   user-select: none;
@@ -4766,30 +4783,30 @@ footer {
   width: fit-content;
   margin-bottom: 8px;
   padding: 4px 7px;
-  color: #fffdf5;
-  background: #36552e;
+  color: #102b23;
+  background: #c4f467;
   font-family: "Courier New", monospace;
-  font-size: 0.58rem;
+  font-size: 0.65rem;
   font-weight: 700;
 }
 
 .about-card h3 {
   margin: 0 0 8px;
-  font-size: clamp(1.05rem, 1.45vw, 1.55rem);
+  font-size: clamp(1.1rem, 1.55vw, 1.7rem);
   line-height: 1.08;
 }
 
 .about-card p {
   margin: 0;
   color: #566052;
-  font-size: 0.67rem;
+  font-size: 0.8rem;
   line-height: 1.48;
 }
 
 .about-profile-card {
-  top: 19%;
-  left: 7.5%;
-  width: 20%;
+  top: 20%;
+  left: 7%;
+  width: 20.5%;
   overflow: hidden;
   border: 0;
   background: transparent;
@@ -4804,11 +4821,24 @@ footer {
 }
 
 .about-intro-card {
-  top: 13%;
+  top: 15%;
   left: 29%;
-  width: 26%;
-  padding: 16px;
-  transform: translate(var(--card-x), var(--card-y)) rotate(0.7deg);
+  width: 27%;
+  padding: 17px;
+  background: #f8f3b9;
+  transform: translate(var(--card-x), var(--card-y)) rotate(-0.7deg);
+}
+
+.about-intro-card::before {
+  position: absolute;
+  top: -10px;
+  left: 36%;
+  width: 66px;
+  height: 17px;
+  border: 1px solid rgba(32, 79, 67, 0.3);
+  background: rgba(63, 207, 184, 0.75);
+  content: "";
+  transform: rotate(5deg);
 }
 
 .about-intro-card > small,
@@ -4817,19 +4847,19 @@ footer {
 .about-card-heading small {
   color: #71806a;
   font-family: "Courier New", monospace;
-  font-size: 0.55rem;
+  font-size: 0.63rem;
   font-weight: 700;
   letter-spacing: 0.06em;
 }
 
 .about-intro-card h3 {
-  margin-top: 8px;
-  font-size: clamp(1.35rem, 1.9vw, 2rem);
+  margin-top: 10px;
+  font-size: clamp(1.55rem, 2.25vw, 2.3rem);
 }
 
 .about-intro-card p {
   color: #32412e;
-  font-size: 0.72rem;
+  font-size: 0.87rem;
   font-weight: 700;
 }
 
@@ -4843,20 +4873,21 @@ footer {
 .about-role-tags span {
   padding: 4px 6px;
   color: #34422f;
-  border: 1px solid rgba(48, 67, 42, 0.25);
-  border-radius: 999px;
-  background: rgba(223, 255, 115, 0.48);
+  border: 1px solid #263d35;
+  border-radius: 4px;
+  background: #fffdf4;
   font-family: "Courier New", monospace;
-  font-size: 0.52rem;
+  font-size: 0.61rem;
   font-weight: 700;
 }
 
 .about-experience-card {
   top: 14%;
-  right: 5.5%;
-  width: 43%;
-  padding: 17px 18px;
-  transform: translate(var(--card-x), var(--card-y)) rotate(-0.6deg);
+  right: 5%;
+  width: 37%;
+  padding: 17px 18px 13px;
+  border-top: 8px solid #51c9ba;
+  transform: translate(var(--card-x), var(--card-y)) rotate(0.6deg);
 }
 
 .about-card-heading {
@@ -4878,9 +4909,9 @@ footer {
 
 .about-experience-list section {
   display: grid;
-  grid-template-columns: 76px minmax(0, 1fr);
-  gap: 3px 10px;
-  padding: 8px 0;
+  grid-template-columns: 73px minmax(0, 1fr);
+  gap: 3px 9px;
+  padding: 7px 0;
   border-top: 1px solid rgba(43, 58, 37, 0.18);
 }
 
@@ -4888,27 +4919,28 @@ footer {
   grid-row: 1 / 3;
   color: #5a713e;
   font-family: "Courier New", monospace;
-  font-size: 0.56rem;
+  font-size: 0.65rem;
   font-weight: 700;
 }
 
 .about-experience-list strong {
-  font-size: 0.68rem;
+  font-size: 0.84rem;
 }
 
 .about-experience-list p {
-  font-size: 0.6rem;
+  font-size: 0.74rem;
   line-height: 1.4;
 }
 
 .about-education-card {
-  top: 41%;
+  top: 43%;
   right: auto;
   bottom: auto;
-  left: 31.5%;
-  width: 36%;
+  left: 29%;
+  width: 27%;
   padding: 14px 16px;
-  transform: translate(var(--card-x), var(--card-y)) rotate(0.5deg);
+  background: #d9f1e9;
+  transform: translate(var(--card-x), var(--card-y)) rotate(0.8deg);
 }
 
 .about-education-card p + p {
@@ -4925,31 +4957,32 @@ footer {
 
 .about-ip-card {
   top: auto;
-  bottom: 20%;
-  left: 56%;
-  width: 30%;
-  padding: 13px 14px;
-  background: #f8f2df;
-  transform: translate(var(--card-x), var(--card-y)) rotate(-0.7deg);
+  right: 5%;
+  bottom: 12%;
+  left: auto;
+  width: 37%;
+  padding: 16px 17px;
+  background: #fbe8a9;
+  transform: translate(var(--card-x), var(--card-y)) rotate(-0.5deg);
 }
 
 .about-ip-card h3 {
-  margin: 6px 0 5px;
-  font-size: 1.05rem;
+  margin: 7px 0 6px;
+  font-size: 1.3rem;
 }
 
 .about-ip-card p {
-  font-size: 0.57rem;
+  font-size: 0.78rem;
   line-height: 1.4;
 }
 
 .about-design-card {
-  bottom: 17%;
-  left: 30%;
-  width: 28%;
-  padding: 13px 14px;
-  background: #eff6cf;
-  transform: translate(var(--card-x), var(--card-y)) rotate(0.9deg);
+  bottom: 11%;
+  left: 29%;
+  width: 27%;
+  padding: 15px 16px;
+  background: #d9edff;
+  transform: translate(var(--card-x), var(--card-y)) rotate(-0.9deg);
 }
 
 .about-design-card > svg {
@@ -4958,14 +4991,14 @@ footer {
   right: 12px;
   width: 18px;
   height: 18px;
-  color: #789438;
+  color: #21799d;
 }
 
 .about-design-card p {
   margin-top: 8px;
   color: #384532;
   font-family: var(--font-ui);
-  font-size: 0.68rem;
+  font-size: 0.81rem;
   font-style: normal;
 }
 
@@ -5513,18 +5546,44 @@ footer {
 
 .desktop-scene-gallery {
   color: #fffdf5;
-  background:
-    radial-gradient(circle at 14% 19%, rgba(255, 246, 199, 0.92) 0 1px, transparent 1.8px),
-    radial-gradient(circle at 73% 28%, rgba(164, 190, 255, 0.78) 0 1px, transparent 1.6px),
-    radial-gradient(circle at 41% 74%, rgba(255, 255, 255, 0.68) 0 1px, transparent 1.7px),
-    radial-gradient(circle at 82% 82%, rgba(223, 255, 115, 0.52) 0 1px, transparent 1.8px),
-    linear-gradient(155deg, #0a1027 0%, #060816 48%, #02030b 100%);
-  background-size: 122px 122px, 176px 176px, 214px 214px, 268px 268px, auto;
+  background: #090715;
+}
+
+.gallery-background {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: #090715 url("/assets/gallery-night-sky.png") center / cover no-repeat;
+  pointer-events: none;
+}
+
+.gallery-background-stars {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.gallery-background-stars span {
+  position: absolute;
+  border-radius: 50%;
+  background: #f5eaff;
+  box-shadow: 0 0 5px 2px rgba(205, 169, 255, 0.8), 0 0 13px 4px rgba(130, 89, 220, 0.35);
+  opacity: 0.25;
+  animation: gallery-star-twinkle 5s ease-in-out infinite alternate;
+}
+
+@keyframes gallery-star-twinkle {
+  from { opacity: 0.15; transform: translate3d(0, 0, 0) scale(0.6); }
+  to { opacity: 0.9; transform: translate3d(3px, -5px, 0) scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-background-stars span { animation: none; opacity: 0.5; }
 }
 
 .gallery-tunnel {
   position: absolute;
-  z-index: 0;
+  z-index: 1;
   inset: 0;
   overflow: hidden;
   background: transparent;
@@ -5538,9 +5597,7 @@ footer {
   display: grid;
   place-items: center;
   color: #fffdf5;
-  background:
-    radial-gradient(circle at 22% 28%, rgba(255, 246, 199, 0.82) 0 1px, transparent 1.8px) 0 0 / 130px 130px,
-    linear-gradient(155deg, #0a1027, #02030b);
+  background: #090715 url("/assets/gallery-night-sky.png") center / cover no-repeat;
   font-family: "Courier New", monospace;
   font-size: 0.72rem;
   font-weight: 700;
@@ -5554,7 +5611,7 @@ footer {
 
 .desktop-gallery-shade {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   inset: 0;
   pointer-events: none;
   background:
@@ -5765,6 +5822,60 @@ footer {
 
 }
 
+@media (min-width: 701px) and (max-width: 1100px) {
+  .about-canvas {
+    top: 150px;
+    left: 50%;
+    width: min(90vw, 900px);
+    height: calc(100svh - 176px);
+    min-height: 570px;
+    aspect-ratio: auto;
+    overflow: hidden;
+    transform: translateX(-50%);
+  }
+
+  .about-board-content {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    align-content: start;
+    gap: 16px;
+    padding: 56px 52px 42px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .about-card:not(.about-scene-decoration) {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: 100%;
+    transform: none !important;
+  }
+
+  .about-profile-card {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    width: min(100%, 220px) !important;
+    justify-self: center;
+  }
+
+  .about-intro-card { grid-column: 2; grid-row: 1; }
+  .about-experience-card { grid-column: 2; grid-row: 2; }
+  .about-education-card { grid-column: 1; grid-row: 3; }
+  .about-ip-card { grid-column: 2; grid-row: 3; }
+  .about-design-card { grid-column: 1 / -1; grid-row: 4; }
+
+  .about-card:not(.about-scene-decoration) {
+    touch-action: pan-y;
+    cursor: auto;
+  }
+}
+
 @media (max-width: 700px) {
   .desktop-portfolio {
     --desktop-type-hero: 2rem;
@@ -5773,9 +5884,9 @@ footer {
   }
 
   .desktop-panels .desktop-scene {
-    width: calc(100% - 12px);
-    margin-inline: 6px;
-    border-radius: 18px;
+    width: 100%;
+    margin-inline: 0;
+    border-radius: 0;
     min-height: 680px;
   }
 
@@ -5831,12 +5942,25 @@ footer {
     width: auto;
     height: auto;
     aspect-ratio: auto;
+    padding: 0;
+    overflow: hidden;
+    transform: none;
+  }
+
+  .about-board-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
     padding: 42px 18px 28px;
     overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
-    background-size: 100% 100%;
-    transform: none;
+  }
+
+  .about-canvas::before {
+    border-width: 38px;
+    border-image-width: 38px;
   }
 
   .about-card {
@@ -5846,8 +5970,11 @@ footer {
     bottom: auto;
     left: auto;
     width: 100%;
+    flex-shrink: 0;
     margin-bottom: 12px;
     transform: none !important;
+    touch-action: pan-y;
+    cursor: auto;
   }
 
   .about-profile-card {
@@ -5872,8 +5999,7 @@ footer {
   }
 
   .about-scene-decoration {
-    position: absolute;
-    margin: 0;
+    display: none;
   }
 
   .about-felt-star {

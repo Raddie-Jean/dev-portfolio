@@ -92,7 +92,7 @@ export function GalleryTunnel({
       alpha: true,
       powerPreference: "high-performance",
     });
-    renderer.setClearColor("#050713", 0.86);
+    renderer.setClearColor("#050713", 0.24);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
@@ -136,7 +136,7 @@ export function GalleryTunnel({
     });
 
     const starGeometry = new THREE.BufferGeometry();
-    const starCount = Math.max(220, images.length * 18);
+    const starCount = Math.max(110, images.length * 9);
     const starPositions = new Float32Array(starCount * 3);
     for (let index = 0; index < starCount; index += 1) {
       starPositions[index * 3] = (Math.random() - 0.5) * (tunnelWidth - 0.7);
@@ -147,17 +147,33 @@ export function GalleryTunnel({
       "position",
       new THREE.BufferAttribute(starPositions, 3),
     );
+    const starCanvas = document.createElement("canvas");
+    starCanvas.width = 32;
+    starCanvas.height = 32;
+    const starContext = starCanvas.getContext("2d");
+    if (starContext) {
+      const glow = starContext.createRadialGradient(16, 16, 2, 16, 16, 16);
+      glow.addColorStop(0, "rgba(255, 255, 255, 1)");
+      glow.addColorStop(0.42, "rgba(255, 255, 255, 0.9)");
+      glow.addColorStop(1, "rgba(255, 255, 255, 0)");
+      starContext.fillStyle = glow;
+      starContext.fillRect(0, 0, 32, 32);
+    }
+    const starTexture = new THREE.CanvasTexture(starCanvas);
     const starMaterial = new THREE.PointsMaterial({
       color: "#fff0bd",
-      size: 0.035,
+      map: starTexture,
+      size: 0.04,
       transparent: true,
-      opacity: 0.9,
+      opacity: 0.8,
+      depthWrite: false,
       sizeAttenuation: true,
     });
     const stars = new THREE.Points(starGeometry, starMaterial);
     scene.add(stars);
     disposableGeometries.push(starGeometry);
     disposableMaterials.push(starMaterial);
+    textures.push(starTexture);
 
     const createSegment = (index: number) => {
       const group = new THREE.Group();

@@ -45,6 +45,7 @@ export function DraggableCard({
 
   const startDrag = (event: ReactPointerEvent<HTMLElement>) => {
     if (
+      window.matchMedia("(max-width: 1100px)").matches ||
       event.button !== 0 ||
       (event.target as HTMLElement).closest("button, a, input, textarea")
     ) {
