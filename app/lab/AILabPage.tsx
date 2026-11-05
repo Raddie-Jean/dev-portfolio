@@ -5,15 +5,13 @@
 import Link from "next/link";
 import {
   ArrowLeft,
+  ArrowRight,
   ArrowUpRight,
   HandGrabbing,
   Sparkle,
 } from "@phosphor-icons/react";
 import gsap from "gsap";
 import {
-  type CSSProperties,
-  type PointerEvent as ReactPointerEvent,
-  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -21,13 +19,15 @@ import {
 import { DesktopWindow } from "../DesktopWindow";
 import { LabProjectPreview } from "./LabProjectPreview";
 import { labProjects } from "./labData";
+import { useInfiniteLabCarousel } from "./useInfiniteLabCarousel";
+
+const labSlugs = labProjects.map((project) => project.slug);
 
 export default function AILabPage() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const pageRef = useRef<HTMLElement>(null);
-  const dragRef = useRef({ pointerId: -1, startX: 0, scrollLeft: 0, moved: false });
-  const frameRef = useRef<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(Math.min(1, labProjects.length - 1));
+  const { controls, dragged } = useInfiniteLabCarousel(carouselRef, labSlugs, setActiveIndex);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [selectedSlug, setSelectedSlug] = useState(labProjects[Math.min(1, labProjects.length - 1)]?.slug ?? "");
   const activeProject = labProjects.find((project) => project.slug === selectedSlug);
@@ -73,101 +73,6 @@ export default function AILabPage() {
     return () => context.revert();
   }, []);
 
-  useEffect(() => {
-    const carousel = carouselRef.current;
-    if (!carousel) return;
-    const cards = Array.from(carousel.querySelectorAll<HTMLElement>("[data-lab-card]"));
-    const media = gsap.matchMedia();
-    media.add("(hover: hover) and (prefers-reduced-motion: no-preference)", () => {
-      const cleanups = cards.map((card) => {
-        const enter = () => gsap.to(card, { y: -12, scale: 1.045, duration: 0.3, ease: "power3.out" });
-        const leave = () => gsap.to(card, { y: 0, scale: 1, duration: 0.24, ease: "power2.out" });
-        card.addEventListener("pointerenter", enter);
-        card.addEventListener("pointerleave", leave);
-        card.addEventListener("focusin", enter);
-        card.addEventListener("focusout", leave);
-        return () => {
-          card.removeEventListener("pointerenter", enter);
-          card.removeEventListener("pointerleave", leave);
-          card.removeEventListener("focusin", enter);
-          card.removeEventListener("focusout", leave);
-        };
-      });
-      return () => cleanups.forEach((cleanup) => cleanup());
-    });
-    return () => media.revert();
-  }, []);
-
-  useEffect(() => {
-    const carousel = carouselRef.current;
-    if (!carousel) return;
-    const initialIndex = Math.min(1, labProjects.length - 1);
-    const frame = requestAnimationFrame(() => {
-      const card = carousel.querySelector<HTMLElement>(`[data-card-index="${initialIndex}"]`);
-      if (!card) return;
-      const left = card.offsetLeft - (carousel.clientWidth - card.offsetWidth) / 2;
-      carousel.scrollTo({ left, behavior: "auto" });
-      setActiveIndex(initialIndex);
-    });
-    return () => cancelAnimationFrame(frame);
-  }, []);
-
-  const syncCenteredCard = () => {
-    if (frameRef.current) cancelAnimationFrame(frameRef.current);
-    frameRef.current = requestAnimationFrame(() => {
-      const carousel = carouselRef.current;
-      if (!carousel) return;
-      const center = carousel.scrollLeft + carousel.clientWidth / 2;
-      const cards = Array.from(carousel.querySelectorAll<HTMLElement>("[data-card-index]"));
-      let closest = activeIndex;
-      let distance = Number.POSITIVE_INFINITY;
-      cards.forEach((card) => {
-        const nextDistance = Math.abs(card.offsetLeft + card.offsetWidth / 2 - center);
-        if (nextDistance < distance) {
-          distance = nextDistance;
-          closest = Number(card.dataset.cardIndex);
-        }
-      });
-      if (Number.isFinite(closest)) setActiveIndex(closest);
-    });
-  };
-
-  const startDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (event.button !== 0) return;
-    const carousel = carouselRef.current;
-    if (!carousel) return;
-    dragRef.current = {
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      scrollLeft: carousel.scrollLeft,
-      moved: false,
-    };
-  };
-
-  const moveDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
-    const carousel = carouselRef.current;
-    const drag = dragRef.current;
-    if (!carousel || drag.pointerId !== event.pointerId) return;
-    const delta = event.clientX - drag.startX;
-    if (Math.abs(delta) > 5) {
-      if (!drag.moved) carousel.setPointerCapture(event.pointerId);
-      drag.moved = true;
-      carousel.classList.add("is-dragging");
-    }
-    carousel.scrollLeft = drag.scrollLeft - delta;
-  };
-
-  const stopDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
-    const carousel = carouselRef.current;
-    if (!carousel || dragRef.current.pointerId !== event.pointerId) return;
-    if (carousel.hasPointerCapture(event.pointerId)) {
-      carousel.releasePointerCapture(event.pointerId);
-    }
-    carousel.classList.remove("is-dragging");
-    dragRef.current.pointerId = -1;
-    syncCenteredCard();
-  };
-
   return (
     <main ref={pageRef} className="ai-lab more-cases-page">
       <img className="ai-lab-bg" src="/assets/lab/raddie-cosmic-garden.png" alt="" />
@@ -185,20 +90,20 @@ export default function AILabPage() {
       <section className="ai-lab-heading">
         <p><Sparkle weight="fill" /> AI LAB / VIBE CODING ARCHIVE</p>
         <h1>Making Ideas Tangible</h1>
-        <span>从网页、App 原型到动画与视频，记录我如何用 AI 把想法快速做成可体验、可讨论、可继续迭代的作品。</span>
+        <span>用 AI 快速实现想法，记录正在生长的灵感。</span>
       </section>
 
       <section className="ai-lab-carousel-shell" aria-label="AI Lab 作品拖拽卡片">
         <div
           ref={carouselRef}
           className="ai-lab-carousel"
-          onScroll={syncCenteredCard}
-          onPointerDown={startDrag}
-          onPointerMove={moveDrag}
-          onPointerUp={stopDrag}
-          onPointerCancel={stopDrag}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+              event.preventDefault();
+              controls.current?.step(event.key === "ArrowLeft" ? -1 : 1);
+            }
+          }}
         >
-          <div className="ai-lab-carousel-spacer" aria-hidden="true" />
           {labProjects.map((project, index) => (
             <button
               type="button"
@@ -206,39 +111,51 @@ export default function AILabPage() {
               data-lab-card
               data-card-index={index}
               className={`ai-lab-case-card ${activeIndex === index ? "is-centered" : ""}`}
-              style={{ "--card-tilt": `${index % 2 === 0 ? -3.5 : 2.6}deg` } as CSSProperties}
-              onFocus={() => setActiveIndex(index)}
+              onFocus={(event) => {
+                if (event.currentTarget.matches(":focus-visible")) controls.current?.to(index);
+              }}
               onClick={() => {
-                if (dragRef.current.moved) {
-                  dragRef.current.moved = false;
+                if (dragged.current) {
+                  dragged.current = false;
                   return;
                 }
-                setActiveIndex(index);
                 setSelectedSlug(project.slug);
                 setPreviewOpen(true);
               }}
               aria-label={`打开作品窗口：${project.title}`}
             >
-              <span className="ai-lab-card-index">{project.index}</span>
+              <span className="ai-lab-card-index"><img src="/assets/lab/reference-print-arrow.png" alt="" aria-hidden="true" draggable={false} /><span>{project.index}</span></span>
               <div className="ai-lab-card-copy">
                 <h2>{project.title}</h2>
                 <p>{project.category}</p>
               </div>
-              <img src={project.cover} alt={project.englishTitle} draggable={false} />
+              <span className="ai-lab-card-media">
+                <span className="ai-lab-media-backing" aria-hidden="true" />
+                <span className="ai-lab-media-tab" aria-hidden="true">LAB</span>
+                <span className="ai-lab-media-mat">
+                  <img src={project.cover} alt={project.englishTitle} draggable={false} loading="lazy" />
+                </span>
+                <img className="ai-lab-pouch" src="/assets/lab/clear-pouch-v2.png" alt="" aria-hidden="true" draggable={false} />
+                <span className="ai-lab-ticket" aria-hidden="true">JEAN / {project.index}</span>
+                <span className="ai-lab-seal" aria-hidden="true"><Sparkle weight="fill" /></span>
+              </span>
               <span className="ai-lab-card-action">
                 OPEN {project.mediaLabel} <ArrowUpRight weight="bold" />
               </span>
             </button>
           ))}
-          <div className="ai-lab-carousel-spacer" aria-hidden="true" />
         </div>
-        <p className="ai-lab-drag-hint"><HandGrabbing weight="fill" /> 左右拖动浏览 · 点击封面打开作品窗口</p>
+        <div className="ai-lab-carousel-controls">
+          <button type="button" aria-label="上一个案例" onClick={() => controls.current?.step(-1)}><ArrowLeft weight="bold" /></button>
+          <p className="ai-lab-drag-hint"><HandGrabbing weight="fill" /><span className="ai-lab-carousel-instruction">拖动浏览 · 点击打开</span><span aria-live="polite">{labProjects[activeIndex]?.index} / {labProjects.length}</span></p>
+          <button type="button" aria-label="下一个案例" onClick={() => controls.current?.step(1)}><ArrowRight weight="bold" /></button>
+        </div>
       </section>
 
       {previewOpen && activeProject && (
         <DesktopWindow
           title={`${activeProject.index}_${activeProject.englishTitle.toUpperCase().replaceAll(" ", "-")}.${activeProject.mediaKind.toUpperCase()}`}
-          className="ai-preview-window lab-project-window"
+          className={`ai-preview-window lab-project-window ${activeProject.demoHref ? "lab-demo-window" : ""}`}
           centered
           topLayer
           zIndex={240}

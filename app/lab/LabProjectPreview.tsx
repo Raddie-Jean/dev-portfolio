@@ -10,7 +10,33 @@ import {
   Play,
   Sparkle,
 } from "@phosphor-icons/react";
+import { useState } from "react";
 import { type LabProject } from "./labData";
+
+function EmbeddedProject({ project }: { project: LabProject }) {
+  const [view, setView] = useState("demo");
+  return (
+    <div className="lab-embedded-project">
+      <nav className="lab-embedded-toolbar" aria-label="案例内容">
+        <strong>{project.title}</strong>
+        <div>
+          <button type="button" aria-pressed={view === "demo"} onClick={() => setView("demo")}>互动 Demo</button>
+          <button type="button" aria-pressed={view === "design"} onClick={() => setView("design")}>设计详情</button>
+        </div>
+      </nav>
+      <div className="lab-embedded-panel" hidden={view !== "demo"}>
+        <iframe
+          src={project.demoHref}
+          title={`${project.title}互动 Demo`}
+          sandbox="allow-scripts allow-same-origin allow-downloads"
+        />
+      </div>
+      <div className="lab-embedded-panel" hidden={view !== "design"}>
+        <LabProjectPreview project={{ ...project, demoHref: undefined }} />
+      </div>
+    </div>
+  );
+}
 
 function ProjectStage({ project }: { project: LabProject }) {
   if ((project.mediaKind === "video" || project.mediaKind === "animation") && project.videoSrc) {
@@ -58,6 +84,8 @@ function ProjectStage({ project }: { project: LabProject }) {
 }
 
 export function LabProjectPreview({ project }: { project: LabProject }) {
+  if (project.demoHref) return <EmbeddedProject project={project} />;
+
   const MediaIcon = project.mediaKind === "app"
     ? DeviceMobile
     : project.mediaKind === "website"
