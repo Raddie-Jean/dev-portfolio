@@ -131,7 +131,8 @@
   height: 100%;
   overflow: hidden;
   cursor: grab;
-  touch-action: pan-y;
+  /* Keep horizontal touch gestures with the carousel, not native page panning. */
+  touch-action: pan-y !important;
 }
 
 .ai-lab-carousel::-webkit-scrollbar {
