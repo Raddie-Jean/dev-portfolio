@@ -164,20 +164,30 @@
   color: #f4f6ff;
   border: 1px solid #626366;
   border-radius: 9px;
-  background: #18191b url("/assets/lab/cardstock-grain-v2.png") center / 100% 100% no-repeat;
+  background: #18191b url("/assets/lab/optimized/cardstock-grain-v2.webp") center / 100% 100% no-repeat;
   box-shadow: 2px 3px 0 #07080a, 0 18px 35px #0008;
   text-align: left;
   transform-origin: center;
-  transition: filter 220ms ease;
   cursor: pointer;
 }
 
-.ai-lab-case-card.is-centered {
-  filter: brightness(1.04);
+/* Before hydration, show one usable cover instead of a stack of unpositioned cards. */
+.ai-lab-carousel:not([data-ready]) .ai-lab-case-card:not(.is-centered) { display: none; }
+.ai-lab-carousel:not([data-ready]) .is-centered { translate: -50% -50%; }
+
+.ai-lab-case-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: inherit;
+  background: #0a0a0e;
+  opacity: 0;
+  transition: opacity 220ms ease;
+  pointer-events: none;
 }
 
-.ai-lab-case-card.is-hovered { filter: brightness(1.1); }
-.ai-lab-case-card.is-muted { filter: brightness(0.55) saturate(0.55); }
+.ai-lab-case-card.is-muted::after { opacity: 0.44; }
 
 .ai-lab-case-card:focus-visible {
   outline: 2px dashed #c8c5bb;
@@ -197,7 +207,7 @@
   color: #111311;
   border: 0;
   border-radius: 0;
-  background: #a3a59e url("/assets/lab/gray-matte-print-v4.png") center / 100% auto;
+  background: #a3a59e url("/assets/lab/optimized/gray-matte-print-v4.webp") center / 100% auto;
   clip-path: polygon(0 0, 100% 0, 100% 76%, 95% 100%, 0 100%);
   font-family: "Lab Stencil", "Arial Black", sans-serif;
   font-size: 30px;
@@ -330,7 +340,7 @@
   border: 1px solid #202327;
   border-radius: 2px;
   color: #16191e;
-  background: #d5d4cc url("/assets/lab/cardstock-grain-v2.png") center / 250% 250%;
+  background: #d5d4cc url("/assets/lab/optimized/cardstock-grain-v2.webp") center / 250% 250%;
   background-blend-mode: screen;
   box-shadow: 1px 2px 2px #0007;
   font: 700 9px "Courier New", monospace;
@@ -356,7 +366,7 @@
   width: 48px;
   height: 48px;
   place-items: center;
-  background: url("/assets/lab/holographic-seal-v2.png") center / contain no-repeat;
+  background: url("/assets/lab/optimized/holographic-seal-v2.webp") center / contain no-repeat;
   rotate: 12deg;
 }
 
@@ -934,7 +944,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ai-lab-carousel,
-  .ai-lab-case-card {
+  .ai-lab-case-card::after {
     scroll-behavior: auto;
     transition: none;
   }

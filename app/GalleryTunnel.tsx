@@ -93,7 +93,8 @@ export function GalleryTunnel({
       powerPreference: "high-performance",
     });
     renderer.setClearColor("#050713", 0.24);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const maxPixelRatio = window.matchMedia("(pointer: coarse)").matches ? 1.25 : 2;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxPixelRatio));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     const tunnelWidth = 8.2;

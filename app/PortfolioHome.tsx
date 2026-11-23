@@ -66,6 +66,7 @@ const getMobileBreakpointSnapshot = () =>
 const getMobileBreakpointServerSnapshot = () => true;
 
 const sceneIds = ["home", "about", "work", "skills", "gallery"] as const;
+const homeBackground = "/assets/home/optimized/intro-background.webp";
 type HomePhase = "loading" | "opening";
 
 const galleryStars = Array.from({ length: 28 }, (_, index) => ({
@@ -329,6 +330,7 @@ export default function PortfolioHome() {
   const panelsRef = useRef<HTMLDivElement>(null);
   const aboutBoardRef = useRef<HTMLDivElement>(null);
   const workDockRef = useRef<HTMLDivElement>(null);
+  const galleryRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const homeLoadingTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const { language } = usePortfolioLanguage();
@@ -339,6 +341,8 @@ export default function PortfolioHome() {
     getMobileBreakpointServerSnapshot,
   );
   const [activeScene, setActiveScene] = useState(0);
+  const [workVisited, setWorkVisited] = useState(false);
+  const [galleryNear, setGalleryNear] = useState(false);
   const [activeCase, setActiveCase] = useState(0);
   const [homePhase, setHomePhase] = useState<HomePhase>("loading");
   const [videoPlaying, setVideoPlaying] = useState(false);
@@ -367,6 +371,18 @@ export default function PortfolioHome() {
   const selectedCase =
     featuredCaseStudies[activeCase] ?? featuredCaseStudies[0];
   const messageVisible = messageOpen && (!isMobileViewport || messageTouched);
+
+  useEffect(() => {
+    const gallery = galleryRef.current;
+    if (!gallery) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setGalleryNear(true);
+      observer.disconnect();
+    }, { rootMargin: "240px" });
+    observer.observe(gallery);
+    return () => observer.disconnect();
+  }, []);
 
   useLayoutEffect(() => {
     if (activeScene === 0) return;
@@ -536,12 +552,16 @@ export default function PortfolioHome() {
       });
 
       panels.forEach((panel, index) => {
+        const activate = () => {
+          setActiveScene(index);
+          if (index === 2) setWorkVisited(true);
+        };
         ScrollTrigger.create({
           trigger: panel,
           start: "top 52%",
           end: "bottom 48%",
-          onEnter: () => setActiveScene(index),
-          onEnterBack: () => setActiveScene(index),
+          onEnter: activate,
+          onEnterBack: activate,
         });
       });
 
@@ -636,8 +656,8 @@ export default function PortfolioHome() {
         .timeline({ defaults: { ease: "power3.out" } })
         .fromTo(
           ".home-theme-title",
-          { autoAlpha: 0, y: 24, scale: 0.92, filter: "blur(8px)" },
-          { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.9 },
+          { autoAlpha: 0, y: 12, scale: 0.97 },
+          { autoAlpha: 1, y: 0, scale: 1, duration: 0.42 },
         )
         .fromTo(
           ".home-loading-card",
@@ -649,7 +669,7 @@ export default function PortfolioHome() {
             duration: 0.42,
             clearProps: "transform",
           },
-          "-=0.28",
+          0.12,
         )
         .fromTo(
           ".home-loading-progress i",
@@ -1107,17 +1127,16 @@ export default function PortfolioHome() {
           className={`desktop-scene desktop-scene-home home-phase-${homePhase} ${activeScene === 0 ? "is-active-scene" : ""}`}
           data-scene="home"
         >
-          <img
-            className="desktop-scene-bg"
-            src="/assets/home/intro-background.png"
-            alt=""
-          />
+          <picture>
+            <source media="(max-width: 700px)" srcSet="/assets/home/optimized/intro-background-mobile.webp" />
+            <img className="desktop-scene-bg" src={homeBackground} alt="" fetchPriority="high" />
+          </picture>
           <div className="desktop-scene-shade" />
 
           <div className="home-opening-layer">
             <img
               className="home-theme-title"
-              src="/assets/home/portfolio-title.png"
+              src="/assets/home/optimized/portfolio-title.webp"
               alt="Jean's world Portfolio"
             />
             <button
@@ -1168,7 +1187,7 @@ export default function PortfolioHome() {
                   <video
                     ref={videoRef}
                     src="/assets/home/luobogou-opening.mp4"
-                    poster="/assets/home/intro-background.png"
+                    poster={homeBackground}
                     preload="none"
                     muted={muted}
                     playsInline
@@ -1312,7 +1331,7 @@ export default function PortfolioHome() {
         >
           <img
             className="desktop-scene-bg"
-            src="/assets/ip/luobogou/scenes/country-street.png"
+            src="/assets/home/optimized/country-street.webp"
             alt=""
             loading="lazy"
             decoding="async"
@@ -1519,7 +1538,7 @@ export default function PortfolioHome() {
         >
           <img
             className="desktop-scene-bg"
-            src="/assets/ip/luobogou/scenes/mushroom-forest-night.jpg"
+            src="/assets/home/optimized/mushroom-forest-night.webp"
             alt=""
             loading="lazy"
             decoding="async"
@@ -1531,7 +1550,7 @@ export default function PortfolioHome() {
             <span>{text.workBody}</span>
           </div>
 
-          {caseOpen && (
+          {caseOpen && (workVisited || activeScene === 2 || workLayerTransitioning) && (
             <DesktopWindow
               title={`${selectedCase.index}_${selectedCase.englishTitle.toUpperCase()}.CASE`}
               className="desktop-case-window"
@@ -1661,7 +1680,7 @@ export default function PortfolioHome() {
         >
           <img
             className="desktop-scene-bg"
-            src="/assets/ip/luobogou/scenes/dream-home.png"
+            src="/assets/home/optimized/dream-home.webp"
             alt=""
             loading="lazy"
             decoding="async"
@@ -1785,6 +1804,7 @@ export default function PortfolioHome() {
 
         <section
           id="gallery"
+          ref={galleryRef}
           className={`desktop-scene desktop-scene-gallery ${activeScene === 4 ? "is-active-scene" : ""}`}
           data-scene="gallery"
         >
@@ -1805,7 +1825,7 @@ export default function PortfolioHome() {
               ))}
             </div>
           </div>
-          <GalleryTunnel images={galleryImages} active={activeScene === 4} />
+          {(galleryNear || activeScene === 4) && <GalleryTunnel images={galleryImages} active={activeScene === 4} />}
           <div className="desktop-gallery-shade" />
           <div className="desktop-section-heading is-light gallery-heading">
             <p>{text.galleryKicker}</p>

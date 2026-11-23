@@ -90,6 +90,21 @@ test("keeps unknown case routes as 404 responses", async () => {
   assert.equal(response.status, 404);
 });
 
+test("keeps the homepage and Lab on lightweight display assets", async () => {
+  const homeHtml = await (await render("/")).text();
+  const labHtml = await (await render("/lab")).text();
+  assert.match(homeHtml, /intro-background-mobile\.webp/);
+  assert.match(labHtml, /raddie-cosmic-garden-mobile\.webp/);
+  assert.match(labHtml, /clear-pouch-v2\.webp/);
+  assert.doesNotMatch(homeHtml, /cover-free\.png/);
+
+  const labMedia = await collectFiles(new URL("assets/lab/optimized/", publicRoot));
+  const totalBytes = (await Promise.all(labMedia.map((file) => stat(file))))
+    .reduce((sum, file) => sum + file.size, 0);
+  assert.ok(totalBytes > 0 && totalBytes < 1_000_000, `Lab display assets: ${totalBytes} bytes`);
+  assert.ok((await stat(new URL("fonts/inter/inter-latin.woff2", publicRoot))).size < 65_536);
+});
+
 test("keeps required public assets available and under the Cloudflare file limit", async () => {
   const requiredAssets = [
     "favicon.svg",

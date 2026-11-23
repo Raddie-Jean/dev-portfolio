@@ -23,23 +23,33 @@ export function useInfiniteLabCarousel(
     gsap.registerPlugin(Draggable, Observer);
     const cards = Array.from(element.querySelectorAll<HTMLElement>("[data-lab-card]"));
     const count = cards.length;
+    if (!count) return;
     const linked = slugs.indexOf(window.location.hash.slice(1));
     const position = { value: linked >= 0 ? linked : 1 };
     const wrap = gsap.utils.wrap(0, count);
     const relative = gsap.utils.wrap(-count / 2, count / 2);
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const supportsHover = window.matchMedia("(hover: hover)");
+    const setters = cards.map((card) => gsap.quickSetter(card, "css"));
+    const visibleCards = cards.map(() => true);
     let step = 350;
+    let viewportWidth = 0;
     let width = 300;
     let height = 430;
     let last = -1;
     let target = position.value;
     let tween: gsap.core.Tween | undefined;
     let settle: gsap.core.Tween | undefined;
+    let highlighted: number | null = null;
     const hoverAnimations = new Map<HTMLElement, gsap.core.Tween>();
     const highlight = (index: number | null) => {
+      if (index === highlighted) return;
+      const previous = highlighted;
+      highlighted = index;
       cards.forEach((card, i) => {
         card.classList.toggle("is-hovered", i === index);
         card.classList.toggle("is-muted", index !== null && i !== index);
+        if (i !== previous && i !== index) return;
         hoverAnimations.get(card)?.kill();
         hoverAnimations.set(card, gsap.to(card, {
           scale: i === index && !preference.matches ? 1.075 : 1,
@@ -50,7 +60,7 @@ export function useInfiniteLabCarousel(
     };
     const hoverCleanups = cards.map((card, index) => {
       const enter = () => {
-        if (window.matchMedia("(hover: hover)").matches && !element.classList.contains("is-dragging")) highlight(index);
+        if (supportsHover.matches && !element.classList.contains("is-dragging")) highlight(index);
       };
       const focus = () => { if (card.matches(":focus-visible")) highlight(index); };
       const leave = () => highlight(null);
@@ -68,14 +78,20 @@ export function useInfiniteLabCarousel(
     });
 
     const render = () => {
-      cards.forEach((card, index) => {
+      const reducedMotion = preference.matches;
+      setters.forEach((set, index) => {
         const distance = relative(index - position.value);
         const near = Math.abs(distance);
-        gsap.set(card, {
+        const visible = near * step < viewportWidth / 2 + width;
+        if (visibleCards[index] !== visible) {
+          visibleCards[index] = visible;
+          cards[index].style.visibility = visible ? "visible" : "hidden";
+        }
+        if (!visible) return;
+        set({
           x: distance * step - width / 2,
-          y: -height / 2 + (preference.matches ? 0 : Math.min(near * 9, 22)),
-          rotation: preference.matches ? 0 : gsap.utils.clamp(-3, 3, distance * 2),
-          autoAlpha: near * step < element.clientWidth / 2 + width ? 1 : 0,
+          y: -height / 2 + (reducedMotion ? 0 : Math.min(near * 9, 22)),
+          rotation: reducedMotion ? 0 : gsap.utils.clamp(-3, 3, distance * 2),
           zIndex: Math.round(100 - near * 10),
         });
       });
@@ -88,7 +104,8 @@ export function useInfiniteLabCarousel(
     const measure = () => {
       width = cards[0].offsetWidth;
       height = cards[0].offsetHeight;
-      step = width + (element.clientWidth < 700 ? 24 : 46);
+      viewportWidth = element.clientWidth;
+      step = width + (viewportWidth < 700 ? 24 : 46);
       render();
     };
     const go = (next: number) => {
@@ -117,6 +134,7 @@ export function useInfiniteLabCarousel(
     let previousX = 0;
     let previousTime = 0;
     let velocity = 0;
+    element.dataset.ready = "true";
     const context = gsap.context(() => {
       measure();
     }, element);
@@ -188,6 +206,7 @@ export function useInfiniteLabCarousel(
       wheel.kill();
       context.revert();
       gsap.set(cards, { clearProps: "transform,opacity,visibility,zIndex" });
+      delete element.dataset.ready;
       controls.current = null;
     };
   }, [root, slugs]);

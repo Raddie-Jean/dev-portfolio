@@ -53,21 +53,20 @@ export default function AILabPage() {
         .timeline({ defaults: { ease: "power3.out" } })
         .fromTo(
           heading,
-          { autoAlpha: 0, y: 22, filter: "blur(7px)" },
+          { autoAlpha: 0, y: 12 },
           {
             autoAlpha: 1,
             y: 0,
-            filter: "blur(0px)",
-            duration: 0.58,
-            stagger: 0.11,
-            clearProps: "transform,filter,opacity,visibility",
+            duration: 0.4,
+            stagger: 0.06,
+            clearProps: "transform,opacity,visibility",
           },
         )
         .fromTo(
           modules,
           { autoAlpha: 0 },
-          { autoAlpha: 1, duration: 0.52, clearProps: "opacity,visibility" },
-          ">",
+          { autoAlpha: 1, duration: 0.38, clearProps: "opacity,visibility" },
+          0.08,
         );
     }, page);
     return () => context.revert();
@@ -75,7 +74,10 @@ export default function AILabPage() {
 
   return (
     <main ref={pageRef} className="ai-lab more-cases-page">
-      <img className="ai-lab-bg" src="/assets/lab/raddie-cosmic-garden.png" alt="" />
+      <picture>
+        <source media="(max-width: 700px)" srcSet="/assets/lab/optimized/raddie-cosmic-garden-mobile.webp" />
+        <img className="ai-lab-bg" src="/assets/lab/optimized/raddie-cosmic-garden.webp" alt="" fetchPriority="high" />
+      </picture>
       <div className="ai-lab-shade" />
 
       <header className="ai-lab-nav">
@@ -133,9 +135,9 @@ export default function AILabPage() {
                 <span className="ai-lab-media-backing" aria-hidden="true" />
                 <span className="ai-lab-media-tab" aria-hidden="true">LAB</span>
                 <span className="ai-lab-media-mat">
-                  <img src={project.cover} alt={project.englishTitle} draggable={false} loading="lazy" />
+                  <img src={project.cover.replace("/projects/", "/optimized/").replace(/\.jpg$/, ".webp")} alt={project.englishTitle} draggable={false} loading="lazy" decoding="async" />
                 </span>
-                <img className="ai-lab-pouch" src="/assets/lab/clear-pouch-v2.png" alt="" aria-hidden="true" draggable={false} />
+                <img className="ai-lab-pouch" src="/assets/lab/optimized/clear-pouch-v2.webp" alt="" aria-hidden="true" draggable={false} decoding="async" />
                 <span className="ai-lab-ticket" aria-hidden="true">JEAN / {project.index}</span>
                 <span className="ai-lab-seal" aria-hidden="true"><Sparkle weight="fill" /></span>
               </span>

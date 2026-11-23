@@ -3270,7 +3270,7 @@ footer {
   inset: 0;
   z-index: -1;
   border: 64px solid transparent;
-  border-image: url("/assets/home/skills/felt-board.png") 64 fill / 64px / 0 round;
+  border-image: url("/assets/home/optimized/skills-felt-board.webp") 64 fill / 64px / 0 round;
   content: "";
   pointer-events: none;
 }
@@ -4752,7 +4752,7 @@ footer {
   z-index: -1;
   inset: 0;
   border: 52px solid transparent;
-  border-image: url("/assets/home/about/felt-board.png") 52 fill / 52px / 0 round;
+  border-image: url("/assets/home/optimized/about-felt-board.webp") 52 fill / 52px / 0 round;
   content: "";
   pointer-events: none;
 }
@@ -5553,7 +5553,7 @@ footer {
   position: absolute;
   z-index: 0;
   inset: 0;
-  background: #090715 url("/assets/gallery-night-sky.png") center / cover no-repeat;
+  background: #090715 url("/assets/home/optimized/gallery-night-sky.webp") center / cover no-repeat;
   pointer-events: none;
 }
 
@@ -5570,7 +5570,10 @@ footer {
   box-shadow: 0 0 5px 2px rgba(205, 169, 255, 0.8), 0 0 13px 4px rgba(130, 89, 220, 0.35);
   opacity: 0.25;
   animation: gallery-star-twinkle 5s ease-in-out infinite alternate;
+  animation-play-state: paused;
 }
+
+.is-active-scene .gallery-background-stars span { animation-play-state: running; }
 
 @keyframes gallery-star-twinkle {
   from { opacity: 0.15; transform: translate3d(0, 0, 0) scale(0.6); }
@@ -5597,7 +5600,7 @@ footer {
   display: grid;
   place-items: center;
   color: #fffdf5;
-  background: #090715 url("/assets/gallery-night-sky.png") center / cover no-repeat;
+  background: #090715 url("/assets/home/optimized/gallery-night-sky.webp") center / cover no-repeat;
   font-family: "Courier New", monospace;
   font-size: 0.72rem;
   font-weight: 700;
