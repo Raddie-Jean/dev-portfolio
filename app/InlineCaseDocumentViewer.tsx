@@ -14,7 +14,7 @@ import {
 } from "@phosphor-icons/react";
 import gsap from "gsap";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { CaseStudy } from "./caseData";
+import { getCasePageSources, type CaseStudy } from "./caseData";
 import type { PortfolioLanguage } from "./usePortfolioLanguage";
 
 type ViewerMode = "overview" | "reader";
@@ -39,15 +39,7 @@ export function InlineCaseDocumentViewer({
   const [thumbnailsOpen, setThumbnailsOpen] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const isChinese = language === "zh";
-  const pages = useMemo(
-    () =>
-      Array.from(
-        { length: project.pageCount },
-        (_, index) =>
-          `${project.pageBase}/page-${String(index + 1).padStart(2, "0")}.jpg`,
-      ),
-    [project.pageBase, project.pageCount],
-  );
+  const pages = useMemo(() => getCasePageSources(project), [project]);
 
   useEffect(() => {
     const syncFullscreen = () => {
@@ -74,6 +66,8 @@ export function InlineCaseDocumentViewer({
   }, []);
 
   const transitionTo = useCallback((nextMode: ViewerMode) => {
+    // Reopening remounts the page stack at the top, so its indicators must start there too.
+    if (nextMode === "reader") setActivePage(0);
     const content = contentRef.current;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!content || reduced) {

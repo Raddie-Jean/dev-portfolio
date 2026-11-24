@@ -90,6 +90,18 @@ test("keeps unknown case routes as 404 responses", async () => {
   assert.equal(response.status, 404);
 });
 
+test("lists Xiaolu pages in source PNG order (68 through 81)", async () => {
+  const response = await render("/work/xiaolu-medical");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  const rail = html.match(/<aside class="document-thumbnail-rail"[^>]*>(.*?)<\/aside>/s)?.[1];
+  assert.ok(rail, "expected a server-rendered thumbnail rail");
+  const pages = Array.from(rail.matchAll(/src="\/(case-pages\/v2\/xiaolu-medical\/page-\d+\.jpg)"/g), ([, src]) => src);
+  const expected = [1, 2, 3, 4, 6, 5, 8, 9, 10, 11, 7, 14, 13, 12];
+  assert.deepEqual(pages, expected.map((page) => `case-pages/v2/xiaolu-medical/page-${String(page).padStart(2, "0")}.jpg`));
+  await Promise.all(pages.map((page) => access(new URL(page, publicRoot))));
+});
+
 test("keeps the homepage and Lab on lightweight display assets", async () => {
   const homeHtml = await (await render("/")).text();
   const labHtml = await (await render("/lab")).text();

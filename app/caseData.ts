@@ -20,6 +20,7 @@ export type CaseStudy = {
   overviewCover?: string;
   pageBase: string;
   pageCount: number;
+  pageOrder?: readonly number[];
   summary: string;
   englishSummary: string;
   tone: string;
@@ -136,6 +137,8 @@ export const caseStudies: CaseStudy[] = [
     overviewCover: "/cases/projects/xiaolu-medical/cover-free.png",
     pageBase: "/case-pages/v2/xiaolu-medical",
     pageCount: 14,
+    // Existing JPGs use the old PDF numbering. Read them in source PNG order (68–81).
+    pageOrder: [1, 2, 3, 4, 6, 5, 8, 9, 10, 11, 7, 14, 13, 12],
     summary:
       "面向医院复杂就诊场景，探索导诊、语音交流、智能问诊、导航与情绪反馈的一体化软硬件体验。",
     englishSummary:
@@ -231,4 +234,9 @@ export const moreCaseStudies = caseStudies.filter(
 
 export function getCaseStudy(slug: string) {
   return caseStudies.find((item) => item.slug === slug);
+}
+
+export function getCasePageSources({ pageBase, pageCount, pageOrder }: CaseStudy) {
+  const order = pageOrder ?? Array.from({ length: pageCount }, (_, index) => index + 1);
+  return order.map((page) => `${pageBase}/page-${String(page).padStart(2, "0")}.jpg`);
 }

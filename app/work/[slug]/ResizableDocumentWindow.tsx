@@ -25,8 +25,7 @@ import {
 
 type ResizableDocumentWindowProps = {
   image: string;
-  pageBase: string;
-  pageCount?: number;
+  previewPages: readonly string[];
   slug: string;
   title: string;
   language: PortfolioLanguage;
@@ -34,18 +33,12 @@ type ResizableDocumentWindowProps = {
 
 export function ResizableDocumentWindow({
   image,
-  pageBase,
-  pageCount,
+  previewPages,
   slug,
   title,
   language,
 }: ResizableDocumentWindowProps) {
   const isChinese = language === "zh";
-  const previewPages = Array.from(
-    { length: pageCount ?? 0 },
-    (_, index) =>
-      `${pageBase}/page-${String(index + 1).padStart(2, "0")}.jpg`,
-  );
   const windowRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const resizeState = useRef<{

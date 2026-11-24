@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { CaseStudy } from "../../caseData";
+import { getCasePageSources, type CaseStudy } from "../../caseData";
 import { LanguageToggle } from "../../LanguageToggle";
 import { usePortfolioLanguage } from "../../usePortfolioLanguage";
 import { ResizableDocumentWindow } from "./ResizableDocumentWindow";
@@ -54,8 +54,7 @@ export function CasePageClient({
 
       <ResizableDocumentWindow
         image={project.image}
-        pageBase={project.pageBase}
-        pageCount={project.pageCount}
+        previewPages={getCasePageSources(project)}
         slug={project.slug}
         title={isChinese ? project.title : project.englishTitle}
         language={language}
