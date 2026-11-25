@@ -125,13 +125,6 @@ const motionActivities = [
     poster: "/assets/work-media/dance-plus-cover.png",
   },
   {
-    id: "credit-growth",
-    title: "Credit Back / Win Credit",
-    label: "CREDIT ACTIVITIES",
-    src: "/assets/work-media/win-credit.mp4",
-    poster: "/cases/projects/credit-activity/cover-16x9.png",
-  },
-  {
     id: "balance-upgrade",
     title: "Balance 2.0",
     label: "BALANCE ACTIVITY",
@@ -164,12 +157,6 @@ const mobileDemoProjects = [
     title: "红包雨",
     label: "RED PACKET RAIN",
     videoSrc: "/assets/work-media/red-packet-rain.mp4",
-  },
-  {
-    id: "win-credit",
-    title: "Win Credit",
-    label: "CREDIT ACTIVITY",
-    videoSrc: "/assets/work-media/win-credit.mp4",
   },
 ] as const;
 
