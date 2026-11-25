@@ -7,11 +7,72 @@ import {
   CheckCircle,
   DeviceMobile,
   FilmStrip,
-  Play,
   Sparkle,
 } from "@phosphor-icons/react";
-import { useState } from "react";
+import { type CSSProperties, type ReactNode, useLayoutEffect, useRef, useState } from "react";
 import { type LabProject } from "./labData";
+
+const desktopViewport = { width: 1440, height: 900 };
+
+function BrowserBar({ title, children }: { title: string; children?: ReactNode }) {
+  return (
+    <div className="lab-browser-bar">
+      <div className="lab-browser-address">
+        <span aria-hidden="true" /><span aria-hidden="true" /><span aria-hidden="true" />
+        <i title={title}>{title}</i>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function PreviewZoom({ original, fit, onChange }: { original: boolean; fit: string; onChange: (original: boolean) => void }) {
+  return (
+    <div className="lab-browser-controls" role="group" aria-label="预览缩放">
+      <button type="button" aria-pressed={!original} onClick={() => onChange(false)}>{fit}</button>
+      <button type="button" aria-pressed={original} onClick={() => onChange(true)}>原始尺寸</button>
+    </div>
+  );
+}
+
+function DemoStage({ project }: { project: LabProject }) {
+  const { width, height } = project.demoViewport ?? desktopViewport;
+  const viewport = useRef<HTMLDivElement>(null);
+  const [fitScale, setFitScale] = useState(0);
+  const [original, setOriginal] = useState(false);
+  const scale = original ? 1 : fitScale;
+
+  useLayoutEffect(() => {
+    const element = viewport.current;
+    if (!element) return;
+    const fit = (availableWidth: number, availableHeight: number) => {
+      if (!availableWidth || !availableHeight) return;
+      setFitScale(Math.min(1, availableWidth / width, availableHeight / height));
+    };
+    fit(element.clientWidth, element.clientHeight);
+    const observer = new ResizeObserver(([entry]) => fit(entry.contentRect.width, entry.contentRect.height));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [height, width]);
+
+  return (
+    <div className="lab-demo-browser">
+      <BrowserBar title={`桌面预览 · ${width} × ${height}`}>
+        <PreviewZoom original={original} fit={`适应窗口 ${Math.round(fitScale * 100)}%`} onChange={setOriginal} />
+      </BrowserBar>
+      <div className="lab-demo-viewport" ref={viewport} tabIndex={0} aria-label="互动 Demo 浏览区">
+        <div className="lab-demo-canvas" style={{ width: width * scale, height: height * scale }}>
+          <iframe
+            src={project.demoHref}
+            title={`${project.title}互动 Demo`}
+            sandbox={`allow-scripts allow-same-origin allow-downloads${project.demoExternalLinks ? " allow-popups" : ""}`}
+            style={{ width, height, transform: `scale(${scale})` }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function EmbeddedProject({ project }: { project: LabProject }) {
   const [view, setView] = useState("demo");
@@ -25,67 +86,83 @@ function EmbeddedProject({ project }: { project: LabProject }) {
         </div>
       </nav>
       <div className="lab-embedded-panel" hidden={view !== "demo"}>
-        <iframe
-          src={project.demoHref}
-          title={`${project.title}互动 Demo`}
-          sandbox="allow-scripts allow-same-origin allow-downloads"
-        />
+        <DemoStage project={project} />
       </div>
       <div className="lab-embedded-panel" hidden={view !== "design"}>
-        <LabProjectPreview project={{ ...project, demoHref: undefined }} />
+        <ProjectDetails project={project} />
+      </div>
+    </div>
+  );
+}
+
+function VideoStage({ project }: { project: LabProject }) {
+  const [ratio, setRatio] = useState(16 / 9);
+  return (
+    <div className="lab-video-stage">
+      <div className="lab-media-video" style={{ "--lab-video-ratio": ratio } as CSSProperties}>
+        <video
+          src={project.videoSrc}
+          poster={project.cover}
+          controls
+          playsInline
+          preload="metadata"
+          onLoadedMetadata={({ currentTarget: video }) => {
+            if (video.videoWidth && video.videoHeight) setRatio(video.videoWidth / video.videoHeight);
+          }}
+          aria-label={`${project.title}演示视频`}
+        />
+      </div>
+    </div>
+  );
+}
+
+function ScreenshotStage({ project }: { project: LabProject }) {
+  const screens = project.screens?.length ? project.screens : [project.cover];
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [original, setOriginal] = useState(false);
+  const label = (index: number) => project.screenLabels?.[index] ?? (project.screens?.length ? `界面 ${index + 1}` : "项目封面");
+  return (
+    <div className="lab-media-browser">
+      <BrowserBar title={label(activeIndex)}>
+        <PreviewZoom original={original} fit="适应窗口" onChange={setOriginal} />
+      </BrowserBar>
+      {screens.length > 1 && (
+        <div className="lab-browser-controls lab-screen-select" role="group" aria-label="选择界面">
+          {screens.map((screen, index) => (
+            <button key={screen} type="button" aria-pressed={activeIndex === index} onClick={() => setActiveIndex(index)}>{label(index)}</button>
+          ))}
+        </div>
+      )}
+      <div key={activeIndex} className={`lab-still-viewport${original ? " is-original" : ""}`} tabIndex={0} aria-label={label(activeIndex)}>
+        <img src={screens[activeIndex]} alt={`${project.title} · ${label(activeIndex)}`} />
       </div>
     </div>
   );
 }
 
 function ProjectStage({ project }: { project: LabProject }) {
-  if ((project.mediaKind === "video" || project.mediaKind === "animation") && project.videoSrc) {
+  if (project.videoSrc) return <VideoStage project={project} />;
+
+  if (project.phoneScreens?.length) {
     return (
-      <div className="lab-media-video">
-        <video
-          key={project.videoSrc}
-          src={project.videoSrc}
-          poster={project.cover}
-          controls
-          playsInline
-          preload="metadata"
-          aria-label={`${project.title}演示视频`}
-        />
-        <span><Play weight="fill" /> 点击播放完整演示</span>
+      <div className="lab-media-app" tabIndex={0} aria-label={`${project.title} · 手机界面，可滚动查看`}>
+        <div className="lab-phone-track">
+          {project.phoneScreens.map(({ src, label }) => (
+            <figure key={src}>
+              <div className="lab-phone-screen"><img src={src} alt={`${project.title} · ${label}`} /></div>
+              <figcaption>{label}</figcaption>
+            </figure>
+          ))}
+        </div>
       </div>
     );
   }
 
-  const screens = project.screens?.length ? project.screens : [project.cover];
-
-  if (project.mediaKind === "app") {
-    return (
-      <div className="lab-media-app">
-        {screens.slice(0, 3).map((screen, index) => (
-          <figure key={screen} className={index === 1 ? "is-primary" : ""}>
-            <i aria-hidden="true" />
-            <img src={screen} alt={`${project.title}界面 ${index + 1}`} />
-          </figure>
-        ))}
-      </div>
-    );
-  }
-
-  return (
-    <div className="lab-media-browser">
-      <div className="lab-browser-bar">
-        <span aria-hidden="true" /><span aria-hidden="true" /><span aria-hidden="true" />
-        <i>preview.local/{project.slug}</i>
-      </div>
-      <img src={screens[0]} alt={`${project.title}网页预览`} />
-      {screens[1] ? <img className="lab-browser-secondary" src={screens[1]} alt={`${project.title}流程预览`} /> : null}
-    </div>
-  );
+  return <ScreenshotStage project={project} />;
 }
 
-export function LabProjectPreview({ project }: { project: LabProject }) {
-  if (project.demoHref) return <EmbeddedProject project={project} />;
-
+function ProjectDetails({ project }: { project: LabProject }) {
+  const stage = project.videoSrc ? "video" : project.phoneScreens?.length ? "phones" : "stills";
   const MediaIcon = project.mediaKind === "app"
     ? DeviceMobile
     : project.mediaKind === "website"
@@ -93,7 +170,7 @@ export function LabProjectPreview({ project }: { project: LabProject }) {
       : FilmStrip;
 
   return (
-    <article className={`lab-project-preview accent-${project.accent}`}>
+    <article className={`lab-project-preview accent-${project.accent} has-${stage}`}>
       <div className="lab-project-main">
         <header className="lab-project-header">
           <div>
@@ -136,4 +213,8 @@ export function LabProjectPreview({ project }: { project: LabProject }) {
       </aside>
     </article>
   );
+}
+
+export function LabProjectPreview({ project }: { project: LabProject }) {
+  return project.demoHref ? <EmbeddedProject project={project} /> : <ProjectDetails project={project} />;
 }

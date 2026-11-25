@@ -2,7 +2,6 @@
 
 /* eslint-disable @next/next/no-img-element -- Bundled portfolio assets are served directly. */
 
-import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
@@ -17,6 +16,7 @@ import {
   useState,
 } from "react";
 import { DesktopWindow } from "../DesktopWindow";
+import { PortfolioNavigation } from "../PortfolioNavigation";
 import { LabProjectPreview } from "./LabProjectPreview";
 import { labProjects } from "./labData";
 import { useInfiniteLabCarousel } from "./useInfiniteLabCarousel";
@@ -80,14 +80,7 @@ export default function AILabPage() {
       </picture>
       <div className="ai-lab-shade" />
 
-      <header className="ai-lab-nav">
-        <Link href="/#work">
-          <ArrowLeft weight="bold" />
-          返回作品桌面
-        </Link>
-        <span>JEAN / AI LAB</span>
-        <i>PROTOTYPES + VIBE CODING ARCHIVE</i>
-      </header>
+      <PortfolioNavigation />
 
       <section className="ai-lab-heading">
         <p><Sparkle weight="fill" /> AI LAB / VIBE CODING ARCHIVE</p>
@@ -157,7 +150,9 @@ export default function AILabPage() {
       {previewOpen && activeProject && (
         <DesktopWindow
           title={`${activeProject.index}_${activeProject.englishTitle.toUpperCase().replaceAll(" ", "-")}.${activeProject.mediaKind.toUpperCase()}`}
-          className={`ai-preview-window lab-project-window ${activeProject.demoHref ? "lab-demo-window" : ""}`}
+          className={`ai-preview-window lab-project-window ${
+            activeProject.demoHref ? "lab-demo-window" : activeProject.phoneScreens?.length ? "lab-phone-window" : ""
+          }`}
           centered
           topLayer
           zIndex={240}

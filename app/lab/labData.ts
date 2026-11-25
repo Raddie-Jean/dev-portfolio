@@ -15,8 +15,12 @@ export type LabProject = {
   process: string[];
   outcomes: string[];
   screens?: string[];
+  screenLabels?: string[];
+  phoneScreens?: { src: string; label: string }[];
   videoSrc?: string;
   demoHref?: string;
+  demoViewport?: { width: number; height: number };
+  demoExternalLinks?: boolean;
   demoNote?: string;
   accent: "cyan" | "violet" | "green" | "pink" | "gold";
 };
@@ -40,6 +44,7 @@ export const labProjects: LabProject[] = [
       "/assets/lab/projects/perxio-dashboard.png",
       "/assets/lab/projects/perxio-closed-loop.png",
     ],
+    screenLabels: ["增长调研工作台", "研究闭环流程"],
     accent: "cyan",
   },
   {
@@ -56,10 +61,10 @@ export const labProjects: LabProject[] = [
     reflection: "回看这个早期概念，最有价值的不是界面数量，而是把抽象感受变成可操作参数的尝试；这也成为后来做 AI 工具时的重要方法。",
     process: ["访谈并记录振动感知差异", "把波形和节奏映射为编辑参数", "验证创作、预览与交付路径"],
     outcomes: ["高保真 App 原型", "触感编辑器", "研究与实验记录"],
-    screens: [
-      "/case-pages/v2/hapopus-haptics/page-04.jpg",
-      "/case-pages/v2/hapopus-haptics/page-06.jpg",
-      "/case-pages/v2/hapopus-haptics/page-08.jpg",
+    phoneScreens: [
+      { src: "/assets/lab/phone-screens/hapopus/home.png", label: "首页" },
+      { src: "/assets/lab/phone-screens/hapopus/editor.png", label: "拼接振动" },
+      { src: "/assets/lab/phone-screens/hapopus/save.png", label: "保存作品" },
     ],
     accent: "cyan",
   },
@@ -95,10 +100,10 @@ export const labProjects: LabProject[] = [
     reflection: "游戏化真正有效的部分不是积分，而是好奇心被下一次发现持续牵引；复盘时因此保留探索与收集，弱化了纯奖励叙事。",
     process: ["建立动物认知与探索目标", "设计地图、图鉴与任务循环", "用插画统一教育与游戏语气"],
     outcomes: ["移动游戏原型", "角色与地图插画", "探索任务系统"],
-    screens: [
-      "/case-pages/v2/wildsit-game/page-02.jpg",
-      "/case-pages/v2/wildsit-game/page-05.jpg",
-      "/case-pages/v2/wildsit-game/page-07.jpg",
+    phoneScreens: [
+      { src: "/assets/lab/phone-screens/wildsit/home.jpg", label: "动物之家" },
+      { src: "/assets/lab/phone-screens/wildsit/explore.jpg", label: "野外探索" },
+      { src: "/assets/lab/phone-screens/wildsit/field-guide.jpg", label: "竹子科普" },
     ],
     accent: "green",
   },
@@ -155,6 +160,7 @@ export const labProjects: LabProject[] = [
     outcomes: ["可交互营销活动 Demo", "任务与积分账本", "学习资产与七日复访机制"],
     screens: ["/assets/lab/projects/teleagent-selection.png"],
     demoHref: "/demos/teleagent/index.html",
+    demoViewport: { width: 1440, height: 960 },
     demoNote: "本地模拟任务与积分 · 不连接真实账户",
     accent: "violet",
   },
@@ -172,7 +178,8 @@ export const labProjects: LabProject[] = [
     reflection: "第一次把 AI 工具探索做成可浏览的产品，而不是个人收藏夹。最大的收获是：分类应该从使用任务出发，而不是照搬工具厂商的能力名称。",
     process: ["盘点高频创作任务", "重组工具分类与筛选逻辑", "快速搭建并迭代导航体验"],
     outcomes: ["导航站原型", "工具分类体系", "vibe coding 入口地图"],
-    screens: ["/assets/lab/projects/vibe-coding-navigator.jpg"],
+    demoHref: "/demos/vibe-coding/index.html",
+    demoExternalLinks: true,
     accent: "pink",
   },
   {
@@ -189,7 +196,6 @@ export const labProjects: LabProject[] = [
     reflection: "语音产品最难设计的不是麦克风按钮，而是节奏感。原型把状态切换、抢话与恢复放在视觉中心，避免用户不知道 AI 是否仍在听。",
     process: ["定义听说与打断状态机", "设计波形、等待和错误反馈", "用短路径原型验证对话节奏"],
     outcomes: ["移动端交互原型", "语音状态系统", "录屏验证方案"],
-    screens: ["/assets/lab/projects/realtime-voice-chat.jpg"],
     accent: "violet",
   },
   {
@@ -206,7 +212,6 @@ export const labProjects: LabProject[] = [
     reflection: "生成内容越丰富，越需要明确的交互边界。这个实验把 AI 放在解释与联想层，而把抽牌、选择和节奏继续交给用户。",
     process: ["搭建抽牌与结果路径", "限定生成内容的角色", "用视觉和转场建立仪式感"],
     outcomes: ["可玩网页原型", "卡牌视觉方向", "生成式叙事规则"],
-    screens: ["/assets/lab/projects/tarot-story-game.jpg"],
     accent: "gold",
   },
 ];

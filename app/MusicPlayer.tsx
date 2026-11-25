@@ -1,7 +1,8 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element -- Radio artwork is already sized and compressed for Vinext. */
+
 import {
-  MusicNotes,
   Pause,
   Play,
   SpeakerHigh,
@@ -119,53 +120,53 @@ export function MusicPlayer() {
         onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
       />
 
-      <div className="music-player-art" aria-hidden="true">
-        <MusicNotes weight="fill" />
-      </div>
-      <div className="music-player-copy">
-        <span>NOW PLAYING</span>
+      <div className="music-player-banner">
         <strong>萝卜狗的晴天散步</strong>
         <small>RADDIE SUNNY WALK</small>
       </div>
-      <button
-        type="button"
-        className="music-player-toggle"
-        onClick={togglePlayback}
-        aria-label={playing ? "暂停音乐" : "播放音乐"}
-      >
-        {playing ? <Pause weight="fill" /> : <Play weight="fill" />}
-      </button>
-
-      <input
-        className="music-player-progress"
-        type="range"
-        min="0"
-        max={TRACK_LENGTH}
-        step="0.1"
-        value={Math.min(currentTime, TRACK_LENGTH)}
-        onChange={(event) => {
-          const nextTime = Number(event.target.value);
-          setCurrentTime(nextTime);
-          if (audioRef.current) audioRef.current.currentTime = nextTime;
-        }}
-        aria-label="音乐播放进度"
-      />
-      <label className="music-player-volume">
-        <SpeakerHigh weight="fill" />
-        <span className="sr-only">音乐音量</span>
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.05"
-          value={volume}
-          onChange={(event) => {
-            const nextVolume = Number(event.target.value);
-            setVolume(nextVolume);
-            if (audioRef.current) audioRef.current.volume = nextVolume;
-          }}
-        />
-      </label>
+      <div className="music-player-transport">
+        <img className="music-player-art" src="/assets/home/radio/raddie-ip-avatar.png" width={240} height={240} alt="《萝卜狗的晴天散步》专辑封面" decoding="async" />
+        <div className="music-player-controls">
+          <input
+            className="music-player-progress"
+            type="range"
+            min="0"
+            max={TRACK_LENGTH}
+            step="0.1"
+            value={Math.min(currentTime, TRACK_LENGTH)}
+            onChange={(event) => {
+              const nextTime = Number(event.target.value);
+              setCurrentTime(nextTime);
+              if (audioRef.current) audioRef.current.currentTime = nextTime;
+            }}
+            aria-label="音乐播放进度"
+          />
+          <label className="music-player-volume">
+            <SpeakerHigh weight="fill" />
+            <span className="sr-only">音乐音量</span>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={volume}
+              onChange={(event) => {
+                const nextVolume = Number(event.target.value);
+                setVolume(nextVolume);
+                if (audioRef.current) audioRef.current.volume = nextVolume;
+              }}
+            />
+          </label>
+        </div>
+        <button
+          type="button"
+          className="music-player-toggle"
+          onClick={togglePlayback}
+          aria-label={playing ? "暂停音乐" : "播放音乐"}
+        >
+          {playing ? <Pause weight="fill" /> : <Play weight="fill" />}
+        </button>
+      </div>
     </div>
   );
 }

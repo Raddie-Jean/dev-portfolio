@@ -7,7 +7,6 @@ import dynamic from "next/dynamic";
 import {
   ArrowDown,
   ArrowLeft,
-  ArrowRight,
   ArrowUpRight,
   Briefcase,
   ChatCircleDots,
@@ -16,7 +15,6 @@ import {
   FilePdf,
   FolderOpen,
   House,
-  List,
   MusicNotes,
   Pause,
   Play,
@@ -26,7 +24,6 @@ import {
   Star,
   User,
   VideoCamera,
-  X,
 } from "@phosphor-icons/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -36,6 +33,7 @@ import { DesktopWindow } from "./DesktopWindow";
 import { DraggableCard } from "./DraggableCard";
 import { InlineCaseDocumentViewer } from "./InlineCaseDocumentViewer";
 import { MusicPlayer } from "./MusicPlayer";
+import { PortfolioNavigation, portfolioNavigationCopy, portfolioSectionIds as sceneIds } from "./PortfolioNavigation";
 import { SmokyText } from "./SmokyText";
 import { usePortfolioLanguage } from "./usePortfolioLanguage";
 import { MobileDemoPreview, VideoWorkPreview } from "./WorkMediaPreview";
@@ -65,7 +63,6 @@ const getMobileBreakpointSnapshot = () =>
 
 const getMobileBreakpointServerSnapshot = () => true;
 
-const sceneIds = ["home", "about", "work", "skills", "gallery"] as const;
 const homeBackground = "/assets/home/optimized/intro-background.webp";
 type HomePhase = "loading" | "opening";
 
@@ -125,11 +122,13 @@ const motionActivities = [
     title: "Dance+",
     label: "DANCE EXPERIENCE",
     src: "/assets/work-media/dance-plus.mp4",
+    poster: "/assets/work-media/dance-plus-cover.png",
   },
   {
     id: "credit-growth",
     title: "Credit Back / Win Credit",
     label: "CREDIT ACTIVITIES",
+    src: "/assets/work-media/win-credit.mp4",
     poster: "/cases/projects/credit-activity/cover-16x9.png",
   },
   {
@@ -160,6 +159,18 @@ const mobileDemoProjects = [
     label: "RESEARCH ASSISTANT",
     videoSrc: "/assets/work-media/daily-lazcash/daily-lazcash-demo.mp4",
   },
+  {
+    id: "red-packet-rain",
+    title: "红包雨",
+    label: "RED PACKET RAIN",
+    videoSrc: "/assets/work-media/red-packet-rain.mp4",
+  },
+  {
+    id: "win-credit",
+    title: "Win Credit",
+    label: "CREDIT ACTIVITY",
+    videoSrc: "/assets/work-media/win-credit.mp4",
+  },
 ] as const;
 
 const homeTrailImages = [
@@ -183,7 +194,6 @@ const homeTrailImages = [
 
 const copy = {
   zh: {
-    nav: ["首页", "关于", "作品", "能力", "画廊"],
     available: "可参与新机会",
     heroKicker: "JEAN'S EXPERIENCE DESIGN DESKTOP",
     heroTitle: "Making complex things feel a little more natural.",
@@ -224,7 +234,6 @@ const copy = {
     resumeTitle: "JEAN_RESUME.PREVIEW",
     resumeRole: "Experience Designer",
     resumeLine: "增长设计 · 服务设计 · AI 产品 · 跨端体验",
-    contact: "和我聊聊",
     skillCloud: [
       "UX Design",
       "Interaction Design",
@@ -253,7 +262,6 @@ const copy = {
     ],
   },
   en: {
-    nav: ["Home", "About", "Work", "Skills", "Gallery"],
     available: "Available for opportunities",
     heroKicker: "JEAN'S EXPERIENCE DESIGN DESKTOP",
     heroTitle: "Making complex things feel a little more natural.",
@@ -296,7 +304,6 @@ const copy = {
     resumeTitle: "JEAN_RESUME.PREVIEW",
     resumeRole: "Experience Designer",
     resumeLine: "Growth · Service Design · AI Products · Connected Experiences",
-    contact: "Let's talk",
     skillCloud: [
       "UX Design",
       "Interaction Design",
@@ -335,6 +342,7 @@ export default function PortfolioHome() {
   const homeLoadingTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const { language } = usePortfolioLanguage();
   const text = copy[language];
+  const { sections, contact } = portfolioNavigationCopy[language];
   const isMobileViewport = useSyncExternalStore(
     subscribeToMobileBreakpoint,
     getMobileBreakpointSnapshot,
@@ -356,7 +364,6 @@ export default function PortfolioHome() {
   const [musicOpen, setMusicOpen] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
   const [resumeView, setResumeView] = useState<"overview" | "document">("overview");
-  const [navOpen, setNavOpen] = useState(false);
   const [messageOpen, setMessageOpen] = useState(false);
   const [messageTouched, setMessageTouched] = useState(false);
   const [workLayerTransitioning, setWorkLayerTransitioning] = useState(false);
@@ -471,7 +478,7 @@ export default function PortfolioHome() {
     if (!dock) return;
     const cards = Array.from(dock.querySelectorAll<HTMLElement>("[data-work-dock-card]"));
     const media = gsap.matchMedia();
-    media.add("(hover: hover) and (prefers-reduced-motion: no-preference)", () => {
+    media.add("(min-width: 701px) and (hover: hover) and (prefers-reduced-motion: no-preference)", () => {
       const cleanups = cards.map((card) => {
         const enter = () => {
           gsap.killTweensOf(card);
@@ -503,33 +510,42 @@ export default function PortfolioHome() {
     const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-scene]"));
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const cardRadius = `${Math.min(64, Math.max(36, window.innerWidth * 0.045))}px`;
+    const responsiveMotion = gsap.matchMedia(root);
 
     const context = gsap.context(() => {
       panels.slice(0, -1).forEach((panel) => {
         if (reducedMotion) return;
-        gsap
-          .timeline({
-            scrollTrigger: {
-              trigger: panel,
-              start: "top top",
-              end: "bottom top",
-              pin: true,
-              pinSpacing: false,
-              scrub: true,
-            },
-          })
-          .to(panel, {
-            scale: 0.91,
-            borderRadius: cardRadius,
-            autoAlpha: 0.52,
-            duration: 0.86,
-            ease: "none",
-          })
-          .to(panel, {
-            autoAlpha: 0,
-            duration: 0.14,
-            ease: "none",
-          });
+        const animateExit = () => {
+          gsap
+            .timeline({
+              scrollTrigger: {
+                trigger: panel,
+                start: "top top",
+                end: "bottom top",
+                pin: true,
+                pinSpacing: false,
+                scrub: true,
+              },
+            })
+            .to(panel, {
+              scale: 0.91,
+              borderRadius: cardRadius,
+              autoAlpha: 0.52,
+              duration: 0.86,
+              ease: "none",
+            })
+            .to(panel, {
+              autoAlpha: 0,
+              duration: 0.14,
+              ease: "none",
+            });
+        };
+
+        if (panel.dataset.scene === "skills") {
+          responsiveMotion.add("(min-width: 701px)", animateExit);
+        } else {
+          animateExit();
+        }
       });
 
       panels.slice(1).forEach((panel) => {
@@ -635,6 +651,7 @@ export default function PortfolioHome() {
 
     return () => {
       if (initialScrollTimer) window.clearTimeout(initialScrollTimer);
+      responsiveMotion.revert();
       context.revert();
     };
   }, []);
@@ -1042,73 +1059,10 @@ export default function PortfolioHome() {
 
   return (
     <main className="desktop-portfolio">
-      <header className="desktop-nav">
-        <div className="desktop-nav-pill">
-          <button
-            type="button"
-            className="desktop-brand"
-            onClick={() => {
-              setNavOpen(false);
-              scrollToScene(0);
-            }}
-            aria-label={language === "zh" ? "返回首页" : "Back to home"}
-          >
-            <img className="desktop-brand-logo" src="/assets/home/jean-logo.png" alt="Jean" />
-          </button>
-
-          <nav className="desktop-nav-links" aria-label="Portfolio sections">
-            {text.nav.map((item, index) => (
-              <button
-                type="button"
-                key={item}
-                className={activeScene === index ? "is-active" : ""}
-                onClick={() => scrollToScene(index)}
-              >
-                {item}
-              </button>
-            ))}
-          </nav>
-
-          <div className="desktop-nav-actions">
-            <a className="desktop-nav-cta" href="mailto:jeanzhou.design@outlook.com">
-              <span>{text.contact}</span>
-              <i aria-hidden="true"><ArrowRight weight="bold" /></i>
-            </a>
-            <button
-              type="button"
-              className="desktop-nav-menu-button"
-              onClick={() => setNavOpen((current) => !current)}
-              aria-expanded={navOpen}
-              aria-controls="portfolio-mobile-menu"
-              aria-label={language === "zh" ? "打开导航" : "Toggle navigation"}
-            >
-              {navOpen ? <X weight="bold" /> : <List weight="bold" />}
-            </button>
-          </div>
-
-          {navOpen && (
-            <nav id="portfolio-mobile-menu" className="desktop-mobile-menu" aria-label="Mobile portfolio sections">
-              {text.nav.map((item, index) => (
-                <button
-                  type="button"
-                  key={item}
-                  className={activeScene === index ? "is-active" : ""}
-                  onClick={() => {
-                    setNavOpen(false);
-                    scrollToScene(index);
-                  }}
-                >
-                  <span>0{index + 1}</span>
-                  {item}
-                </button>
-              ))}
-            </nav>
-          )}
-        </div>
-      </header>
+      <PortfolioNavigation activeScene={activeScene} onSceneChange={scrollToScene} />
 
       <div className="desktop-scene-progress" aria-label="Scene navigation">
-        {text.nav.map((item, index) => (
+        {sections.map((item, index) => (
           <button
             type="button"
             key={item}
@@ -1366,6 +1320,7 @@ export default function PortfolioHome() {
               zIndex={cardZ("profile")}
               onFocus={() => setTopCard("profile")}
               boundaryRef={aboutBoardRef}
+              boundaryPadding={52}
             >
               <img src="/assets/home/about/jean-portrait.png" alt="Jean" loading="lazy" decoding="async" />
             </DraggableCard>
@@ -1615,7 +1570,7 @@ export default function PortfolioHome() {
                 aria-label={`${language === "zh" ? item.title : item.englishTitle} — ${language === "zh" ? "在当前窗口查看" : "View in current window"}`}
               >
                 <span className="desktop-work-thumb">
-                <img src={item.covers.square} alt="" loading="lazy" decoding="async" />
+                  <img src={item.covers.square} alt="" loading="lazy" decoding="async" />
                 </span>
                 <span className="desktop-work-card-copy">
                   <small>{item.index}</small>
@@ -1688,11 +1643,13 @@ export default function PortfolioHome() {
           <div className="desktop-scene-shade" />
           <div className="desktop-skills-layout">
             <div className="desktop-skill-intro">
-              <p className="desktop-skill-kicker">{text.skillsKicker}</p>
-              <div className="desktop-skill-title-row">
-                <h2>{text.skillsTitle}</h2>
+              <div className="desktop-skill-heading">
+                <p className="desktop-skill-kicker">{text.skillsKicker}</p>
+                <div className="desktop-skill-title-row">
+                  <h2>{text.skillsTitle}</h2>
+                </div>
+                <span className="desktop-skill-summary">{text.skillsBody}</span>
               </div>
-              <span className="desktop-skill-summary">{text.skillsBody}</span>
               <div className="desktop-skill-map-block">
                 <div className="desktop-skill-map-meta" aria-hidden="true">
                   <span>TOOLS + METHODS</span>
@@ -1745,7 +1702,7 @@ export default function PortfolioHome() {
                         {text.resume}
                       </button>
                       <a href="mailto:jeanzhou.design@outlook.com">
-                        {text.contact}
+                        {contact}
                         <ArrowUpRight weight="bold" />
                       </a>
                     </div>

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding 相关网站精选</title>
+<style>
+  /* ====== Ant Design v6 CSS Variables ====== */
+  :root {
+    --ant-primary: #1677FF;
+    --ant-primary-hover: #4096FF;
+    --ant-primary-active: #0958D9;
+    --ant-primary-bg: #E6F4FF;
+    --ant-primary-border: #91CAFF;
+    --ant-success: #52C41A;
+    --ant-warning: #FAAD14;
+    --ant-error: #FF4D4F;
+    --ant-info: #1677FF;
+    --ant-bg-layout: #F5F5F5;
+    --ant-bg-container: #FFFFFF;
+    --ant-bg-elevated: #FFFFFF;
+    --ant-bg-hover: #FAFAFA;
+    --ant-text-primary: rgba(0,0,0,0.88);
+    --ant-text-secondary: rgba(0,0,0,0.65);
+    --ant-text-tertiary: rgba(0,0,0,0.45);
+    --ant-text-disabled: rgba(0,0,0,0.25);
+    --ant-border: #D9D9D9;
+    --ant-border-secondary: #F0F0F0;
+    --ant-radius-sm: 2px;
+    --ant-radius-md: 4px;
+    --ant-radius: 6px;
+    --ant-radius-lg: 8px;
+    --ant-radius-xl: 16px;
+    --ant-radius-full: 9999px;
+    --ant-padding-xs: 4px;
+    --ant-padding-sm: 8px;
+    --ant-padding-md: 16px;
+    --ant-padding-lg: 24px;
+    --ant-padding-xl: 32px;
+    --ant-shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.03), 0 1px 6px -1px rgba(0,0,0,0.02), 0 2px 4px 0 rgba(0,0,0,0.02);
+    --ant-shadow: 0 6px 16px 0 rgba(0,0,0,0.08), 0 3px 6px -4px rgba(0,0,0,0.12), 0 9px 28px 8px rgba(0,0,0,0.05);
+    --ant-shadow-card: 0 1px 2px -2px rgba(0,0,0,0.16), 0 3px 6px 0 rgba(0,0,0,0.12), 0 5px 12px 4px rgba(0,0,0,0.09);
+    --ant-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+    --ant-font-size: 14px;
+    --ant-font-size-lg: 16px;
+    --ant-font-size-sm: 12px;
+    --ant-font-size-headline: 24px;
+    --ant-font-weight-normal: 400;
+    --ant-font-weight-strong: 600;
+    --ant-motion-duration-fast: 0.1s;
+    --ant-motion-duration-mid: 0.2s;
+    --ant-motion-duration-slow: 0.3s;
+    --ant-motion-ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--ant-font-family);
+    font-size: var(--ant-font-size);
+    font-weight: var(--ant-font-weight-normal);
+    background: var(--ant-bg-layout);
+    color: var(--ant-text-primary);
+    line-height: 1.5715;
+    min-height: 100vh;
+  }
+
+  /* ====== Hero ====== */
+  .hero {
+    background: var(--ant-bg-container);
+    border-bottom: 1px solid var(--ant-border-secondary);
+    padding: var(--ant-padding-xl) 20px var(--ant-padding-lg);
+    text-align: center;
+    position: relative; z-index: 1;
+  }
+  .hero h1 {
+    font-size: var(--ant-font-size-headline);
+    font-weight: var(--ant-font-weight-strong);
+    color: var(--ant-text-primary);
+    margin-bottom: var(--ant-padding-xs);
+  }
+  .hero .subtitle {
+    color: var(--ant-text-secondary);
+    font-size: var(--ant-font-size);
+    margin-bottom: var(--ant-padding-lg);
+  }
+
+  /* ====== Linear Chart ====== */
+  .chart-wrap { max-width: 720px; margin: 0 auto; padding: 0 10px; }
+  .chart-title { font-size: var(--ant-font-size-sm); color: var(--ant-text-tertiary); margin-bottom: var(--ant-padding-sm); text-align: left; padding-left: 2px; }
+  .chart-bars { display: flex; flex-direction: column; gap: var(--ant-padding-xs); }
+  .chart-row { display: flex; align-items: center; gap: var(--ant-padding-sm); }
+  .chart-label { width: 130px; flex-shrink: 0; font-size: var(--ant-font-size-sm); color: var(--ant-text-secondary); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chart-bar-bg { flex: 1; height: 20px; border-radius: var(--ant-radius); background: var(--ant-bg-hover); overflow: hidden; position: relative; }
+  .chart-bar { height: 100%; border-radius: var(--ant-radius); background: var(--ant-primary); transition: width 0.8s var(--ant-motion-ease-in-out); width: 0; position: relative; }
+  .chart-bar .chart-val { position: absolute; right: var(--ant-padding-xs); top: 0; bottom: 0; display: flex; align-items: center; font-size: var(--ant-font-size-sm); font-weight: var(--ant-font-weight-strong); color: #fff; }
+  .chart-total { margin-top: var(--ant-padding-sm); text-align: center; font-size: var(--ant-font-size-sm); color: var(--ant-text-secondary); }
+  .chart-total strong { color: var(--ant-primary); font-size: var(--ant-font-size-lg); font-weight: var(--ant-font-weight-strong); }
+
+  /* ====== Sticky Tabs ====== */
+  .tabs-wrap {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--ant-bg-container);
+    border-bottom: 1px solid var(--ant-border-secondary);
+    padding: var(--ant-padding-sm) 0;
+  }
+  .tabs-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 0 var(--ant-padding-lg);
+    display: flex; flex-wrap: wrap; justify-content: center; gap: var(--ant-padding-xs);
+  }
+  .tab {
+    padding: var(--ant-padding-xs) var(--ant-padding-md);
+    border-radius: var(--ant-radius);
+    border: none;
+    background: transparent;
+    color: var(--ant-text-secondary);
+    font-size: var(--ant-font-size);
+    font-weight: var(--ant-font-weight-normal);
+    cursor: pointer;
+    transition: color var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out);
+    user-select: none;
+    position: relative;
+  }
+  .tab::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: calc(100% - 32px); height: 2px;
+    background: var(--ant-primary); border-radius: 1px;
+    transition: transform var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out);
+  }
+  .tab:hover { color: var(--ant-primary); }
+  .tab.active { color: var(--ant-primary); font-weight: var(--ant-font-weight-strong); }
+  .tab.active::after { transform: translateX(-50%) scaleX(1); }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: var(--ant-padding-lg) var(--ant-padding-lg) 80px; position: relative; z-index: 1; }
+  .category { margin-bottom: 48px; animation: fadeUp 0.35s var(--ant-motion-ease-in-out) both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .category-header { display: flex; align-items: center; gap: var(--ant-padding-sm); margin-bottom: var(--ant-padding-md); padding-bottom: var(--ant-padding-md); }
+  .category-icon { width: 36px; height: 36px; border-radius: var(--ant-radius); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .category-title { font-size: var(--ant-font-size-lg); font-weight: var(--ant-font-weight-strong); color: var(--ant-text-primary); }
+  .category-count { font-size: var(--ant-font-size-sm); color: var(--ant-text-secondary); margin-left: auto; background: var(--ant-bg-hover); padding: 2px var(--ant-padding-sm); border-radius: var(--ant-radius-full); border: 1px solid var(--ant-border-secondary); }
+  .category.hidden { display: none; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--ant-padding-md); }
+
+  /* ====== Card ====== */
+  .card {
+    position: relative;
+    background: var(--ant-bg-container);
+    border: 1px solid var(--ant-border-secondary);
+    border-radius: var(--ant-radius-lg);
+    padding: var(--ant-padding-lg);
+    transition: box-shadow var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out), border-color var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out);
+    overflow: visible;
+    text-decoration: none; color: inherit;
+    display: flex; flex-direction: column; gap: var(--ant-padding-sm);
+  }
+  .card:hover { border-color: var(--ant-primary-border); box-shadow: var(--ant-shadow); }
+  .card.deleting { animation: cardOut 0.3s var(--ant-motion-ease-in-out) forwards; }
+  @keyframes cardOut { to { opacity: 0; transform: scale(0.9); margin-bottom: -60px; padding: 0; } }
+
+  .card-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: var(--ant-padding-xs); opacity: 0; transition: opacity var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out); z-index: 5; }
+  .card:hover .card-actions { opacity: 1; }
+  .card-action-btn {
+    width: 28px; height: 28px; border-radius: var(--ant-radius);
+    border: 1px solid var(--ant-border); background: var(--ant-bg-container);
+    color: var(--ant-text-secondary); font-size: 12px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all var(--ant-motion-duration-fast) var(--ant-motion-ease-in-out);
+  }
+  .card-action-btn:hover { border-color: var(--ant-primary); color: var(--ant-primary); }
+  .card-action-btn.del:hover { border-color: var(--ant-error); color: var(--ant-error); background: #FFF2F0; }
+  .card-action-btn.tag-btn:hover { border-color: var(--ant-primary); color: var(--ant-primary); background: var(--ant-primary-bg); }
+
+  .card-top { display: flex; align-items: flex-start; gap: var(--ant-padding-sm); }
+  .card-logo {
+    width: 48px; height: 48px; border-radius: var(--ant-radius);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; flex-shrink: 0; position: relative;
+  }
+  .card-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--ant-radius); }
+  .card-logo .initial {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-size: var(--ant-font-size-lg); font-weight: var(--ant-font-weight-strong);
+    color: #fff; border-radius: var(--ant-radius);
+  }
+  .card-info { flex: 1; min-width: 0; }
+  .card-name { font-size: var(--ant-font-size); font-weight: var(--ant-font-weight-strong); color: var(--ant-text-primary); margin-bottom: 2px; line-height: 1.5715; }
+  .card-desc { font-size: var(--ant-font-size-sm); color: var(--ant-text-secondary); line-height: 1.6667; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+  .card-tags { display: flex; flex-wrap: wrap; gap: var(--ant-padding-xs); }
+  .card-tags:empty { display: none; }
+  .tag-pill {
+    display: inline-flex; align-items: center;
+    font-size: var(--ant-font-size-sm);
+    padding: 0 7px; border-radius: var(--ant-radius-md);
+    border: 1px solid; cursor: pointer; user-select: none;
+    line-height: 20px;
+    transition: opacity var(--ant-motion-duration-fast) var(--ant-motion-ease-in-out);
+  }
+  .tag-pill:hover { opacity: 0.75; }
+
+  .card-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: var(--ant-padding-sm); border-top: 1px solid var(--ant-border-secondary); }
+  .card-url { font-size: var(--ant-font-size-sm); color: var(--ant-text-tertiary); font-family: 'SFMono-Regular',Consolas,'Liberation Mono',Menlo,Courier,monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 180px; }
+  .card-arrow { width: 24px; height: 24px; border-radius: var(--ant-radius-md); background: transparent; display: flex; align-items: center; justify-content: center; color: var(--ant-text-tertiary); font-size: 12px; transition: all var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out); }
+  .card:hover .card-arrow { color: var(--ant-primary); background: var(--ant-primary-bg); }
+
+  /* ====== Tag Editor Modal ====== */
+  .tag-editor-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: flex; align-items: center; justify-content: center; animation: overlayIn var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out); }
+  @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+  .tag-editor { background: var(--ant-bg-elevated); border-radius: var(--ant-radius-lg); padding: var(--ant-padding-lg); max-width: 440px; width: 90%; box-shadow: var(--ant-shadow); animation: panelIn 0.25s var(--ant-motion-ease-in-out); }
+  @keyframes panelIn { from { opacity: 0; transform: scale(0.9) translateY(16px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .tag-editor h3 { font-size: var(--ant-font-size-lg); font-weight: var(--ant-font-weight-strong); color: var(--ant-text-primary); margin-bottom: 2px; }
+  .tag-editor .te-sub { font-size: var(--ant-font-size); color: var(--ant-text-secondary); margin-bottom: var(--ant-padding-md); }
+  .tag-editor .te-site-name { color: var(--ant-primary); font-weight: var(--ant-font-weight-strong); }
+  .tag-options { display: flex; flex-wrap: wrap; gap: var(--ant-padding-xs); margin-bottom: var(--ant-padding-lg); }
+  .tag-option { padding: var(--ant-padding-xs) var(--ant-padding-md); border-radius: var(--ant-radius); border: 1px solid var(--ant-border); background: var(--ant-bg-container); color: var(--ant-text-primary); font-size: var(--ant-font-size); cursor: pointer; user-select: none; transition: all var(--ant-motion-duration-fast) var(--ant-motion-ease-in-out); }
+  .tag-option:hover { border-color: var(--ant-primary); color: var(--ant-primary); }
+  .tag-option.selected { background: var(--ant-primary); border-color: var(--ant-primary); color: #fff; }
+  .te-actions { display: flex; gap: var(--ant-padding-sm); justify-content: flex-end; }
+  .te-btn { padding: var(--ant-padding-xs) 15px; border-radius: var(--ant-radius); border: 1px solid var(--ant-border); background: var(--ant-bg-container); color: var(--ant-text-primary); font-size: var(--ant-font-size); cursor: pointer; height: 32px; display: inline-flex; align-items: center; transition: all var(--ant-motion-duration-mid) var(--ant-motion-ease-in-out); }
+  .te-btn:hover { color: var(--ant-primary); border-color: var(--ant-primary); }
+  .te-btn.save { background: var(--ant-primary); border-color: var(--ant-primary); color: #fff; }
+  .te-btn.save:hover { background: var(--ant-primary-hover); border-color: var(--ant-primary-hover); }
+
+  /* ====== Toast ====== */
+  .toast-wrap { position: fixed; bottom: var(--ant-padding-lg); left: 50%; transform: translateX(-50%); z-index: 300; display: flex; flex-direction: column; align-items: center; gap: var(--ant-padding-sm); }
+  .toast { background: var(--ant-bg-elevated); border-radius: var(--ant-radius-lg); padding: 10px var(--ant-padding-md); font-size: var(--ant-font-size); display: flex; align-items: center; gap: var(--ant-padding-sm); box-shadow: var(--ant-shadow); animation: toastIn 0.3s var(--ant-motion-ease-in-out); max-width: 480px; border: 1px solid var(--ant-border-secondary); }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .toast .toast-msg { color: var(--ant-text-primary); }
+  .toast .toast-undo { color: var(--ant-primary); cursor: pointer; font-weight: var(--ant-font-weight-strong); white-space: nowrap; }
+  .toast .toast-undo:hover { color: var(--ant-primary-hover); }
+
+  .footer { text-align: center; padding: var(--ant-padding-lg) 0; color: var(--ant-text-tertiary); font-size: var(--ant-font-size-sm); border-top: 1px solid var(--ant-border-secondary); margin-top: var(--ant-padding-lg); }
+
+  @media (max-width: 768px) {
+    .container { padding: var(--ant-padding-md) var(--ant-padding-md) 60px; }
+    .hero { padding: var(--ant-padding-lg) var(--ant-padding-md) var(--ant-padding-md); }
+    .hero h1 { font-size: 20px; }
+    .chart-label { width: 90px; font-size: 11px; }
+    .grid { grid-template-columns: 1fr; }
+    .tabs-inner { padding: 0 var(--ant-padding-sm); gap: 4px; }
+    .tab { padding: 4px 12px; font-size: var(--ant-font-size-sm); }
+    .card-actions { opacity: 1; }
+    .tag-editor { padding: var(--ant-padding-md); }
+    .tag-option { padding: 4px 12px; font-size: var(--ant-font-size-sm); }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Vibe Coding 相关网站精选</h1>
+  <p class="subtitle">AI 驱动开发的工具、灵感与资源合集</p>
+  <div class="chart-wrap">
+    <div class="chart-title">各分类网站数量</div>
+    <div class="chart-bars" id="chartBars"></div>
+    <div class="chart-total">共 <strong id="chartTotal">0</strong> 个网站 · <strong id="chartCats">0</strong> 个分类</div>
+  </div>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs-inner" id="tabs"></div>
+</div>
+
+<div class="container">
+  <div id="categories"></div>
+  <div class="footer">🖱️ 鼠标悬停卡片可打标签或删除 · 标签帮你从设计角度拆解网页亮点</div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// ============ DATA ============
+const data = {
+  tools: { name: "AI Vibe Coding 工具平台", icon: "🤖", color: "#E6F4FF", sites: [
+    { name: "Cursor", url: "https://www.cursor.com", desc: "AI代码编辑器，支持多文件编辑和智能代理" },
+    { name: "Lovable", url: "https://lovable.dev", desc: "从想法到应用，秒级构建全栈React应用" },
+    { name: "Bolt.new", url: "https://bolt.new", desc: "浏览器内全栈AI编程IDE，支持实时预览" },
+    { name: "v0 by Vercel", url: "https://v0.dev", desc: "AI生成UI组件，设计转代码，支持React/Svelte/Vue" },
+    { name: "Replit", url: "https://replit.com", desc: "云端IDE + AI Agent自动构建和部署" },
+    { name: "Windsurf", url: "https://windsurf.com", desc: "Agentic IDE，多步自动化工作流" },
+    { name: "Trae", url: "https://www.trae.ai", desc: "字节跳动免费AI IDE" },
+    { name: "Claude Code", url: "https://github.com/anthropics/claude-code", desc: "自然语言驱动的编码Agent" },
+    { name: "GitHub Copilot", url: "https://github.com/features/copilot", desc: "AI配对编程，多模型支持" },
+    { name: "Tempo", url: "https://www.tempo.new", desc: "可视化React构建器，双向GitHub同步" },
+    { name: "Devin", url: "https://devin.ai", desc: "自主AI软件工程师" },
+    { name: "Zed", url: "https://zed.dev", desc: "Rust构建的Agentic IDE，120fps" },
+    { name: "Augment Code", url: "https://www.augmentcode.com", desc: "专业工程师AI助手" },
+    { name: "Firebase Studio", url: "https://studio.firebase.google.com", desc: "Google云端全栈AI开发环境" },
+    { name: "Napkins.dev", url: "https://www.napkins.dev", desc: "截图转代码工具" },
+    { name: "Manus", url: "https://manus.im", desc: "自主AI Agent，端到端项目自动化" },
+    { name: "aider", url: "https://aider.chat", desc: "终端AI配对编程工具" },
+    { name: "OpenHands", url: "https://github.com/All-Hands-AI/OpenHands", desc: "开源AI驱动开发Agent" },
+    { name: "Warp", url: "https://warp.dev", desc: "AI驱动现代终端" },
+    { name: "Cline", url: "https://cline.bot", desc: "VS Code自主AI编码Agent" },
+    { name: "Roo Code", url: "https://roocode.com", desc: "多模式AI开发团队" },
+    { name: "Dyad", url: "https://www.dyad.sh", desc: "免费本地开源AI应用构建器" },
+    { name: "Same.new", url: "https://same.new", desc: "AI网站构建器，支持克隆和创建" },
+    { name: "Google AI Studio", url: "https://aistudio.google.com", desc: "使用Gemini进行Vibe Coding" },
+    { name: "Creatr", url: "https://getcreatr.com", desc: "创建并部署Web应用和落地页" },
+    { name: "Softgen", url: "https://softgen.ai", desc: "描述愿景构建全栈Web应用" },
+  ]},
+  inspiration: { name: "网页设计灵感库", icon: "🎨", color: "#FFF0F6", sites: [
+    { name: "curated.design", url: "https://curated.design", desc: "精选优质网页设计合集，按风格/行业/功能分类" },
+    { name: "landing.love", url: "https://www.landing.love", desc: "海量落地页案例，动画重网站视频展示" },
+    { name: "Awwwards", url: "https://www.awwwards.com", desc: "全球最佳网页设计评选平台" },
+    { name: "Siteinspire", url: "https://www.siteinspire.com", desc: "高质量网页设计画廊，按风格/类型筛选" },
+    { name: "Lapa Ninja", url: "https://www.lapa.ninja", desc: "7300+落地页设计灵感，含免费资源" },
+    { name: "Land-book", url: "https://land-book.com", desc: "落地页画廊，按配色/字体/行业分类" },
+    { name: "Page Collective", url: "https://pagecollective.com", desc: "落地页案例大集合，跨行业对比" },
+    { name: "MaxiBestOf", url: "https://maxibestof.one", desc: "每日更新设计灵感流，按分类浏览" },
+    { name: "CSS Nectar", url: "https://cssnectar.com", desc: "按风格/颜色/国家筛选的设计画廊" },
+    { name: "Godly", url: "https://godly.website", desc: "1000+精选AI产品/作品集/前沿网站" },
+    { name: "One Page Love", url: "https://onepagelove.com", desc: "单页网站灵感大全" },
+    { name: "Httpster", url: "https://httpster.net", desc: "创意独立工作室网站展示" },
+    { name: "FWA", url: "https://thefwa.com", desc: "技术创新网站奖，历史悠久" },
+    { name: "Minimal Gallery", url: "https://minimal.gallery", desc: "极简主义设计画廊" },
+    { name: "Dead Simple Sites", url: "https://deadsimplesites.com", desc: "极简网站集合，去繁就简" },
+    { name: "Refero", url: "https://refero.design", desc: "真实产品UI屏幕画廊，按组件/流程分类" },
+    { name: "Page Flows", url: "https://pageflows.com", desc: "移动端和Web UI灵感，按屏幕类型分类" },
+    { name: "saaspo.com", url: "https://saaspo.com", desc: "专注SaaS官网，B端产品设计灵感" },
+    { name: "Mobbin", url: "https://mobbin.com", desc: "海量App移动端UI截图，做小程序/APP参考" },
+    { name: "Landdding", url: "https://landdding.com", desc: "精选全球网站，按行业/设计类型分类" },
+    { name: "Admire The Web", url: "https://admiretheweb.com", desc: "多元化设计画廊，涵盖电商/编辑" },
+    { name: "Awesome Marketing Websites", url: "https://awesomemarketingwebsites.com", desc: "高转化营销网站精选集" },
+    { name: "Web Design Inspiration", url: "https://www.webdesign-inspiration.com", desc: "设计趋势追踪灵感库" },
+    { name: "SaaS Examples", url: "https://divbyzero.com/tools/saas/", desc: "SaaS网站营销页案例大全" },
+  ]},
+  components: { name: "UI 组件 & 设计系统", icon: "🧩", color: "#E6FFFB", sites: [
+    { name: "component.gallery", url: "https://component.gallery", desc: "组件与设计系统合集，统一页面规范" },
+    { name: "TDesign", url: "https://tdesign.tencent.com", desc: "腾讯开源企业级设计体系" },
+    { name: "Ant Design", url: "https://ant.design", desc: "企业级UI设计语言与React组件库" },
+    { name: "Shadcn UI", url: "https://ui.shadcn.com", desc: "现代React组件库，可定制性强" },
+    { name: "Chakra UI", url: "https://www.chakra-ui.com", desc: "模块化React组件库" },
+    { name: "Radix UI", url: "https://www.radix-ui.com", desc: "无样式可访问性组件库" },
+    { name: "Tailwind UI", url: "https://tailwindui.com", desc: "Tailwind CSS官方组件库" },
+    { name: "Storybook", url: "https://storybook.js.org", desc: "UI组件开发环境" },
+    { name: "Figma", url: "https://www.figma.com", desc: "设计协作平台，行业标杆" },
+    { name: "Framer", url: "https://www.framer.com", desc: "设计+网站构建，动效强大" },
+    { name: "Uizard", url: "https://uizard.io", desc: "AI UI设计工具，草图转设计" },
+    { name: "Galileo AI", url: "https://www.usegalileo.ai", desc: "AI生成UI设计，文字转界面" },
+    { name: "Locofy", url: "https://www.locofy.ai", desc: "设计转代码，Figma插件" },
+    { name: "CodeFun", url: "https://www.codefun.dev", desc: "Figma转代码，智能布局分析" },
+    { name: "Builder.io", url: "https://www.builder.io", desc: "可视化构建+AI生成" },
+    { name: "rebrand.gallery", url: "https://rebrand.gallery", desc: "品牌改版案例，做视觉重塑参考" },
+    { name: "navbar.gallery", url: "https://navbar.gallery", desc: "导航栏专属设计，解决菜单单调难题" },
+    { name: "cta.gallery", url: "https://cta.gallery", desc: "行动按钮CTA专区，提升页面高级感" },
+    { name: "Anima", url: "https://www.animaapp.com", desc: "设计转代码，支持React/Vue" },
+    { name: "Pixso", url: "https://pixso.cn", desc: "国产设计协作工具，设计转代码" },
+  ]},
+  icons: { name: "图标 & 视觉素材", icon: "🖼️", color: "#FFFBE6", sites: [
+    { name: "hugeicons.com", url: "https://hugeicons.com", desc: "成套专业图标，不用到处找素材" },
+    { name: "iconfont", url: "https://www.iconfont.cn", desc: "阿里巴巴矢量图标库，中文首选" },
+    { name: "Phosphor Icons", url: "https://phosphoricons.com", desc: "开源图标库，多种风格" },
+    { name: "Feather Icons", url: "https://feathericons.com", desc: "轻量SVG图标，简洁优雅" },
+    { name: "Heroicons", url: "https://heroicons.com", desc: "Tailwind官方图标库" },
+    { name: "Lucide", url: "https://lucide.dev", desc: "现代图标库，Feather Icons继任者" },
+    { name: "Tabler Icons", url: "https://tabler-icons.io", desc: "免费开源图标，1200+图标" },
+    { name: "Flaticon", url: "https://www.flaticon.com", desc: "免费矢量图标大平台" },
+    { name: "Noun Project", url: "https://thenounproject.com", desc: "图标搜索平台，300万+图标" },
+    { name: "Iconify", url: "https://iconify.design", desc: "100+图标集统一API" },
+    { name: "Unsplash", url: "https://unsplash.com", desc: "免费高质量图片库" },
+    { name: "Pexels", url: "https://www.pexels.com", desc: "免费高质量图片和视频" },
+    { name: "Dribbble", url: "https://dribbble.com", desc: "设计师作品社区" },
+    { name: "Behance", url: "https://www.behance.net", desc: "Adobe官方作品展示平台" },
+    { name: "IconScout", url: "https://iconscout.com", desc: "图标/插画/3D素材平台" },
+    { name: "Shape.so", url: "https://shape.so", desc: "矢量插画和图形素材" },
+    { name: "unDraw", url: "https://undraw.co", desc: "开源扁平插画，可改色" },
+    { name: "Humaaans", url: "https://www.humaaans.com", desc: "人物插画混合工具" },
+    { name: "3D Icons", url: "https://3dicons.co", desc: "3D图标免费下载" },
+    { name: "Squoosh", url: "https://squoosh.app", desc: "图片压缩优化工具" },
+  ]},
+  colors: { name: "配色 & 字体工具", icon: "🎨", color: "#F0F5FF", sites: [
+    { name: "Coolors", url: "https://coolors.co", desc: "超快配色方案生成器，按空格生成" },
+    { name: "Color Hunt", url: "https://colorhunt.co", desc: "精选配色方案，每日更新" },
+    { name: "Paletton", url: "https://paletton.com", desc: "高级配色工具，支持多种模式" },
+    { name: "Adobe Color", url: "https://color.adobe.com", desc: "Adobe官方配色工具" },
+    { name: "UI Colors", url: "https://uicolors.app", desc: "Tailwind配色生成器" },
+    { name: "Google Fonts", url: "https://fonts.google.com", desc: "免费字体库，1500+字体" },
+    { name: "Fontjoy", url: "https://fontjoy.com", desc: "AI字体搭配生成器" },
+    { name: "Fonts In Use", url: "https://fontsinuse.com", desc: "字体使用案例数据库" },
+    { name: "Typewolf", url: "https://www.typewolf.com", desc: "字体推荐与排版灵感" },
+    { name: "西西配色", url: "https://peise.cc", desc: "专业在线配色工具，支持Tailwind" },
+    { name: "Color Space", url: "https://mycolor.space", desc: "渐变色生成器" },
+    { name: "Gradient Hunt", url: "https://gradienthunt.com", desc: "精选渐变配色方案" },
+    { name: "Happy Hues", url: "https://www.happyhues.co", desc: "配色方案与UI示例" },
+    { name: "Fontshare", url: "https://www.fontshare.com", desc: "免费高质量字体" },
+    { name: "Font Squirrel", url: "https://www.fontsquirrel.com", desc: "免费商用字体" },
+    { name: "WhatTheFont", url: "https://www.myfonts.com/pages/whatthefont", desc: "图片字体识别" },
+    { name: "Type Scale", url: "https://type-scale.com", desc: "字体层级生成工具" },
+    { name: "Gridlover", url: "https://www.gridlover.net", desc: "排版网格生成器" },
+    { name: "Mesh Gradient", url: "https://meshgradient.com", desc: "网格渐变生成器" },
+    { name: "Eva Design", url: "https://colors.eva.design", desc: "深/浅主题配色生成" },
+  ]},
+  resources: { name: "其他设计资源", icon: "📝", color: "#F9F0FF", sites: [
+    { name: "Canva", url: "https://www.canva.com", desc: "设计工具平台，模板丰富" },
+    { name: "CodePen", url: "https://codepen.io", desc: "前端代码展示与灵感" },
+    { name: "GitHub", url: "https://github.com", desc: "代码托管与开源社区" },
+    { name: "StackBlitz", url: "https://stackblitz.com", desc: "浏览器IDE，即时运行" },
+    { name: "Vibehackers", url: "https://vibehackers.io", desc: "Vibe Coding项目展示和招聘平台" },
+    { name: "Awesome Vibe Coding", url: "https://github.com/filipecalegario/awesome-vibe-coding", desc: "Vibe Coding资源大全GitHub" },
+    { name: "vibecoding.app", url: "https://vibecoding.app", desc: "Vibe Coding社区与工具导航" },
+    { name: "PeerPush", url: "https://peerpush.com", desc: "AI产品发布与社区" },
+    { name: "Product Hunt", url: "https://www.producthunt.com", desc: "新产品发现平台" },
+    { name: "GetDesign.md", url: "https://getdesign.md", desc: "DESIGN.md文件浏览库" },
+    { name: "CodeGuide", url: "https://www.codeguide.dev", desc: "AI编码项目文档创建" },
+    { name: "AGENTS.md", url: "https://agents.md", desc: "编码Agent指导格式标准" },
+    { name: "Context7", url: "https://github.com/upstash/context7", desc: "向LLM提供最新版本文档" },
+    { name: "Reddit VibeCoding", url: "https://www.reddit.com/r/vibecoding/", desc: "Vibe Coding Reddit社区" },
+    { name: "DeepLearning.AI", url: "https://www.deeplearning.ai", desc: "Vibe Coding 101课程" },
+    { name: "Eagle", url: "https://eagle.cool", desc: "设计素材管理工具" },
+    { name: "Milanote", url: "https://www.milanote.com", desc: "创意笔记与灵感板" },
+    { name: "Notion", url: "https://www.notion.so", desc: "笔记与协作平台" },
+    { name: "Figma Community", url: "https://www.figma.com/community", desc: "Figma社区插件与模板" },
+  ]}
+};
+
+// ============ TAGS CONFIG — Ant Design preset colors ============
+const TAG_CONFIG = [
+  { key: 'color',      label: '🎨 配色', color: '#0958D9', bg: '#E6F4FF', border: '#91CAFF' },
+  { key: 'animation',  label: '✨ 动效', color: '#C41D7F', bg: '#FFF0F6', border: '#FFADD2' },
+  { key: 'layout',     label: '📐 布局', color: '#08979C', bg: '#E6FFFB', border: '#87E8DE' },
+  { key: 'creative',   label: '💡 创意', color: '#D48806', bg: '#FFFBE6', border: '#FFE58F' },
+  { key: 'interaction',label: '🖱️ 交互', color: '#389E0D', bg: '#F6FFED', border: '#B7EB8F' },
+  { key: 'typography', label: '🔤 字体', color: '#D4380D', bg: '#FFF2E8', border: '#FFBB96' },
+  { key: 'illustration',label:'🎭 插画', color: '#1D39C4', bg: '#F0F5FF', border: '#ADC6FF' },
+  { key: 'threed',     label: '🧊 3D',   color: '#006D75', bg: '#E6FFFB', border: '#87E8DE' },
+  { key: 'brand',      label: '🏷️ 品牌', color: '#531DAB', bg: '#F9F0FF', border: '#D3ADF7' },
+  { key: 'responsive', label: '📱 响应式', color: '#D46B08', bg: '#FFF7E6', border: '#FFD591' },
+  { key: 'darkmode',   label: '🌓 深色', color: '#595959', bg: '#FAFAFA', border: '#D9D9D9' },
+  { key: 'minimal',    label: '🤍 极简', color: '#8C8C8C', bg: '#FAFAFA', border: '#E8E8E8' },
+];
+
+// ============ LOCAL STORAGE ============
+const STORAGE_KEY = 'wb_nav_data';
+function loadState(){ try{ const r=localStorage.getItem(STORAGE_KEY); if(!r)return {tags:{},deleted:[]}; const p=JSON.parse(r); return {tags:p.tags||{},deleted:p.deleted||[]}; }catch{return {tags:{},deleted:[]};} }
+function saveState(s){ try{localStorage.setItem(STORAGE_KEY,JSON.stringify(s));}catch{} }
+function getSiteTags(url){ return state.tags[url]||[]; }
+function setSiteTags(url,tags){ if(tags.length===0)delete state.tags[url]; else state.tags[url]=tags; saveState(state); }
+function isDeleted(url){ return state.deleted.includes(url); }
+function markDeleted(url){ if(!state.deleted.includes(url))state.deleted.push(url); saveState(state); }
+function undoDelete(url){ state.deleted=state.deleted.filter(u=>u!==url); saveState(state); }
+
+let state=loadState();
+const ORIGINAL_SITES={};
+Object.keys(data).forEach(k=>{ORIGINAL_SITES[k]=[...data[k].sites];});
+Object.keys(data).forEach(k=>{data[k].sites=data[k].sites.filter(s=>!isDeleted(s.url));});
+
+// ============ HELPERS ============
+function getFavicon(url){ try{ return `https://www.google.com/s2/favicons?domain=${new URL(url).hostname}&sz=64`; }catch{return'';} }
+function getDisplayUrl(url){ try{ return new URL(url).hostname.replace('www.',''); }catch{return url;} }
+
+// ============ CHART ============
+const maxCount=Math.max(...Object.values(data).map(c=>c.sites.length||1));
+const chartBars=document.getElementById('chartBars');
+let total=0;
+Object.values(data).forEach(cat=>{
+  total+=cat.sites.length;
+  const pct=(cat.sites.length/maxCount*100).toFixed(0);
+  const row=document.createElement('div');
+  row.className='chart-row';
+  row.innerHTML=`<div class="chart-label">${cat.name}</div><div class="chart-bar-bg"><div class="chart-bar" style="width:0%" data-width="${pct}%"><span class="chart-val">${cat.sites.length}</span></div></div>`;
+  chartBars.appendChild(row);
+});
+document.getElementById('chartTotal').textContent=total;
+document.getElementById('chartCats').textContent=Object.keys(data).length;
+setTimeout(()=>document.querySelectorAll('.chart-bar').forEach(b=>b.style.width=b.dataset.width),100);
+
+// ============ TABS ============
+const tabsEl=document.getElementById('tabs');
+const allCats=Object.keys(data);
+tabsEl.innerHTML=`<div class="tab active" data-cat="all">全部</div>`+allCats.map(k=>`<div class="tab" data-cat="${k}">${data[k].icon} ${data[k].name}</div>`).join('');
+
+// ============ RENDER ============
+const catContainer=document.getElementById('categories');
+allCats.forEach(k=>{
+  const cat=data[k];
+  const section=document.createElement('div');
+  section.className='category'; section.dataset.cat=k;
+  section.innerHTML=`<div class="category-header"><div class="category-icon" style="background:${cat.color}">${cat.icon}</div><div><div class="category-title">${cat.name}</div></div><div class="category-count">${cat.sites.length} 个网站</div></div><div class="grid" id="grid-${k}"></div>`;
+  catContainer.appendChild(section);
+  renderGrid(section.querySelector('.grid'),cat.sites,k,cat.color);
+});
+
+function renderGrid(grid,sites,catKey,bgColor){
+  grid.innerHTML=sites.map((site,idx)=>{
+    const favicon=getFavicon(site.url),displayUrl=getDisplayUrl(site.url),initial=site.name.charAt(0).toUpperCase();
+    const tagKeys=getSiteTags(site.url);
+    const tagsHtml=tagKeys.length?tagKeys.map(tk=>{const cfg=TAG_CONFIG.find(t=>t.key===tk);return cfg?`<span class="tag-pill" style="background:${cfg.bg};color:${cfg.color};border-color:${cfg.border}">${cfg.label}</span>`:'';}).join(''):'';
+    const safeName=site.name.replace(/'/g,"\\'");
+    return `<div class="card" data-url="${site.url}" data-cat="${catKey}" data-idx="${idx}">
+      <div class="card-actions">
+        <button class="card-action-btn tag-btn" title="打标签" onclick="event.preventDefault();event.stopPropagation();openTagEditor('${site.url}','${safeName}','${catKey}',${idx})">🏷️</button>
+        <button class="card-action-btn del" title="删除" onclick="event.preventDefault();event.stopPropagation();removeSite('${site.url}','${catKey}',${idx},'${safeName}')">✕</button>
+      </div>
+      <a href="${site.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:var(--ant-padding-sm)">
+        <div class="card-top">
+          <div class="card-logo" style="background:${bgColor}">
+            <img src="${favicon}" alt="${site.name}" onerror="this.style.display='none';this.parentNode.querySelector('.initial').style.display='flex'"/>
+            <span class="initial" style="display:none">${initial}</span>
+          </div>
+          <div class="card-info"><div class="card-name">${site.name}</div><div class="card-desc">${site.desc}</div></div>
+        </div>
+        <div class="card-tags">${tagsHtml}</div>
+        <div class="card-bottom"><span class="card-url">${displayUrl}</span><span class="card-arrow">↗</span></div>
+      </a>
+    </div>`;
+  }).join('');
+}
+
+// ============ TAG EDITOR ============
+function openTagEditor(url,name,catKey,idx){
+  const existingTags=getSiteTags(url);
+  const tagOptionsHtml=TAG_CONFIG.map(t=>{const sel=existingTags.includes(t.key)?' selected':'';return `<div class="tag-option${sel}" data-tag="${t.key}">${t.label}</div>`;}).join('');
+  const overlay=document.createElement('div');
+  overlay.className='tag-editor-overlay';
+  overlay.innerHTML=`<div class="tag-editor"><h3>为网站打标签</h3><p class="te-sub"><span class="te-site-name">${name}</span> · 多选标签分类</p><div class="tag-options">${tagOptionsHtml}</div><div class="te-actions"><button class="te-btn cancel">取消</button><button class="te-btn save">保存</button></div></div>`;
+  document.body.appendChild(overlay);
+  let selected=[...existingTags];
+  overlay.querySelector('.tag-options').addEventListener('click',e=>{const opt=e.target.closest('.tag-option');if(!opt)return;const tk=opt.dataset.tag;if(selected.includes(tk)){selected=selected.filter(t=>t!==tk);opt.classList.remove('selected');}else{selected.push(tk);opt.classList.add('selected');}});
+  const close=()=>{if(overlay.parentNode)document.body.removeChild(overlay);};
+  overlay.querySelector('.cancel').onclick=close;
+  overlay.querySelector('.save').onclick=()=>{setSiteTags(url,selected);refreshCardTags(url);close();};
+  overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
+}
+function refreshCardTags(url){
+  const card=document.querySelector(`.card[data-url="${url}"]`);
+  if(!card)return; const tagKeys=getSiteTags(url); const tagsEl=card.querySelector('.card-tags'); if(!tagsEl)return;
+  tagsEl.innerHTML=tagKeys.length?tagKeys.map(tk=>{const cfg=TAG_CONFIG.find(t=>t.key===tk);return cfg?`<span class="tag-pill" style="background:${cfg.bg};color:${cfg.color};border-color:${cfg.border}">${cfg.label}</span>`:'';}).join(''):'';
+}
+
+// ============ DELETE ============
+window._undoTimeouts={};
+function removeSite(url,catKey,idx,name){
+  const card=document.querySelector(`.card[data-url="${url}"]`);
+  if(!card)return; card.classList.add('deleting');
+  setTimeout(()=>{markDeleted(url);card.remove();updateCounts();showUndoToast(url,catKey,idx,name);},300);
+}
+function updateCounts(){
+  let visibleTotal=0;
+  document.querySelectorAll('.category').forEach(c=>{const visible=c.querySelectorAll('.card').length;const countEl=c.querySelector('.category-count');if(countEl)countEl.textContent=`${visible} 个网站`;c.classList.toggle('hidden',visible===0);visibleTotal+=visible;});
+  document.getElementById('chartTotal').textContent=visibleTotal;
+}
+function showUndoToast(url,catKey,idx,name){
+  const toastWrap=document.getElementById('toastWrap'),toast=document.createElement('div');
+  toast.className='toast';
+  toast.innerHTML=`<span class="toast-msg">已移除「<strong>${name}</strong>」</span><span class="toast-undo">撤销</span>`;
+  toastWrap.appendChild(toast);
+  const tid=setTimeout(()=>toast.remove(),5000);
+  window._undoTimeouts[url]=tid;
+  toast.querySelector('.toast-undo').onclick=()=>{clearTimeout(tid);toast.remove();restoreSite(url,catKey,idx);};
+}
+function restoreSite(url,catKey,idx){
+  undoDelete(url); const origSites=ORIGINAL_SITES[catKey]; if(!origSites)return;
+  const siteData=origSites.find(s=>s.url===url); if(!siteData)return;
+  if(!data[catKey].sites.some(s=>s.url===url))data[catKey].sites.push(siteData);
+  const grid=document.getElementById(`grid-${catKey}`); if(!grid)return;
+  const bgColor=data[catKey].color,favicon=getFavicon(siteData.url),displayUrl=getDisplayUrl(siteData.url),initial=siteData.name.charAt(0).toUpperCase();
+  const tagKeys=getSiteTags(siteData.url);
+  const tagsHtml=tagKeys.length?tagKeys.map(tk=>{const cfg=TAG_CONFIG.find(t=>t.key===tk);return cfg?`<span class="tag-pill" style="background:${cfg.bg};color:${cfg.color};border-color:${cfg.border}">${cfg.label}</span>`:'';}).join(''):'';
+  const safeName=siteData.name.replace(/'/g,"\\'");
+  const cardDiv=document.createElement('div');
+  cardDiv.className='card'; cardDiv.dataset.url=siteData.url; cardDiv.dataset.cat=catKey; cardDiv.dataset.idx=idx;
+  cardDiv.innerHTML=`<div class="card-actions"><button class="card-action-btn tag-btn" title="打标签" onclick="event.preventDefault();event.stopPropagation();openTagEditor('${siteData.url}','${safeName}','${catKey}',${idx})">🏷️</button><button class="card-action-btn del" title="删除" onclick="event.preventDefault();event.stopPropagation();removeSite('${siteData.url}','${catKey}',${idx},'${safeName}')">✕</button></div><a href="${siteData.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:var(--ant-padding-sm)"><div class="card-top"><div class="card-logo" style="background:${bgColor}"><img src="${favicon}" alt="${siteData.name}" onerror="this.style.display='none';this.parentNode.querySelector('.initial').style.display='flex'"/><span class="initial" style="display:none">${initial}</span></div><div class="card-info"><div class="card-name">${siteData.name}</div><div class="card-desc">${siteData.desc}</div></div></div><div class="card-tags">${tagsHtml}</div><div class="card-bottom"><span class="card-url">${displayUrl}</span><span class="card-arrow">↗</span></div></a>`;
+  cardDiv.style.animation='fadeUp 0.4s var(--ant-motion-ease-in-out) both';
+  grid.appendChild(cardDiv);
+  const cat=document.querySelector(`.category[data-cat="${catKey}"]`); if(cat)cat.classList.remove('hidden');
+  updateCounts();
+}
+
+// ============ TAB FILTERING ============
+tabsEl.addEventListener('click',e=>{const tab=e.target.closest('.tab');if(!tab)return;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');const cat=tab.dataset.cat;document.querySelectorAll('.category').forEach(c=>{c.classList.toggle('hidden',cat!=='all'&&c.dataset.cat!==cat);});});
+</script>
+</body>
+</html>
